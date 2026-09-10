@@ -1,37 +1,467 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>BrandForge Provisioning API</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BrandForge Developer Docs</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    body { margin:0; background:#fafafa; }
-    .topbar { display:none; }
-    #brand { background:linear-gradient(90deg,#2563EB,#7C3AED); color:#fff; padding:18px 28px; font-family:Calibri,Arial,sans-serif; }
-    #brand h1 { margin:0; font-size:22px; font-weight:700; }
-    #brand p { margin:4px 0 0; font-size:13px; opacity:.9; }
-    .swagger-ui .info { margin:20px 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #fff; color: #111; font-size: 15px; line-height: 1.65; display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* TOP NAV */
+    .topnav {
+      position: sticky; top: 0; z-index: 200;
+      background: #fff; border-bottom: 1px solid #e5e7eb;
+      height: 52px; display: flex; align-items: center;
+      padding: 0 24px; gap: 32px;
+    }
+    .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .logo-mark {
+      width: 26px; height: 26px; border-radius: 6px;
+      background: linear-gradient(135deg, #7CF1F8, #22d3ee);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 12px; color: #0f172a;
+    }
+    .logo-name { font-size: 15px; font-weight: 700; color: #111; }
+    .logo-docs { font-size: 12px; font-weight: 600; color: #0891b2; background: #e0f7fa; padding: 2px 7px; border-radius: 4px; }
+    .topnav-links { display: flex; gap: 0; list-style: none; margin-left: 8px; }
+    .topnav-links a {
+      font-size: 13.5px; font-weight: 500; color: #6b7280;
+      text-decoration: none; padding: 0 12px; height: 52px;
+      display: flex; align-items: center;
+      border-bottom: 2px solid transparent;
+      transition: color .15s, border-color .15s;
+    }
+    .topnav-links a:hover { color: #111; }
+    .topnav-links a.on { color: #0891b2; border-bottom-color: #7CF1F8; }
+    .topnav-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+    .btn-sm {
+      padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600;
+      text-decoration: none; transition: all .15s;
+    }
+    .btn-ghost { color: #374151; border: 1px solid #e5e7eb; }
+    .btn-ghost:hover { border-color: #9ca3af; }
+    .btn-teal { background: #7CF1F8; color: #0f172a; }
+    .btn-teal:hover { background: #22d3ee; }
+    .search-bar {
+      display: flex; align-items: center; gap: 8px;
+      border: 1px solid #e5e7eb; border-radius: 6px;
+      padding: 5px 12px; font-size: 13px; color: #9ca3af;
+      cursor: pointer; min-width: 180px;
+    }
+    .search-bar kbd { font-size: 11px; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 3px; padding: 1px 5px; color: #6b7280; }
+
+    /* LAYOUT */
+    .layout { display: flex; flex: 1; max-width: 1280px; margin: 0 auto; width: 100%; }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 240px; flex-shrink: 0;
+      border-right: 1px solid #e5e7eb;
+      padding: 24px 0;
+      position: sticky; top: 52px; height: calc(100vh - 52px); overflow-y: auto;
+    }
+    .sidebar-group { margin-bottom: 24px; }
+    .sidebar-group-label {
+      font-size: 11px; font-weight: 700; color: #9ca3af;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      padding: 0 20px; margin-bottom: 4px;
+    }
+    .sidebar-link {
+      display: block; font-size: 13.5px; font-weight: 400;
+      color: #374151; text-decoration: none;
+      padding: 6px 20px; transition: all .12s;
+    }
+    .sidebar-link:hover { color: #0891b2; background: #f0fdfe; }
+    .sidebar-link.active { color: #0891b2; font-weight: 600; background: #e0f7fa; border-right: 2px solid #7CF1F8; }
+    .sidebar-link.sub { padding-left: 32px; font-size: 13px; }
+
+    /* MAIN CONTENT */
+    .main { flex: 1; min-width: 0; padding: 48px 48px 80px; }
+    .main-inner { max-width: 720px; }
+
+    /* BREADCRUMB */
+    .breadcrumb { font-size: 12px; color: #9ca3af; margin-bottom: 24px; display: flex; gap: 6px; align-items: center; }
+    .breadcrumb a { color: #0891b2; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    /* PAGE HEADER */
+    .page-title { font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 12px; color: #111; }
+    .page-lead { font-size: 16px; color: #6b7280; margin-bottom: 40px; max-width: 600px; line-height: 1.6; }
+
+    /* HERO CARD */
+    .hero-card {
+      background: linear-gradient(135deg, #f0fdfe 0%, #e0f7fa 100%);
+      border: 1px solid #a5f3fc; border-radius: 12px;
+      padding: 32px 36px; margin-bottom: 40px;
+      display: flex; gap: 40px; align-items: flex-start;
+    }
+    .hero-card-left { flex: 1; }
+    .hero-card-left h2 { font-size: 18px; font-weight: 600; margin-bottom: 8px; color: #0f172a; }
+    .hero-card-left p { font-size: 14px; color: #0891b2; line-height: 1.6; }
+    .hero-btns { display: flex; gap: 10px; margin-top: 20px; }
+    .btn-primary { background: #0891b2; color: #fff; padding: 9px 18px; border-radius: 7px; font-size: 13.5px; font-weight: 600; text-decoration: none; transition: background .15s; }
+    .btn-primary:hover { background: #0e7490; }
+    .btn-outline { border: 1px solid #0891b2; color: #0891b2; padding: 9px 18px; border-radius: 7px; font-size: 13.5px; font-weight: 600; text-decoration: none; transition: all .15s; }
+    .btn-outline:hover { background: #e0f7fa; }
+    .code-mini {
+      background: #1e293b; border-radius: 10px; padding: 16px 20px;
+      font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #94a3b8;
+      line-height: 1.8; width: 320px; flex-shrink: 0;
+    }
+    .cm { color: #475569; }
+    .ck { color: #7CF1F8; }
+    .cv { color: #86efac; }
+    .cu { color: #93c5fd; }
+
+    /* SECTION HEADINGS */
+    .sec-label { font-size: 11px; font-weight: 700; color: #0891b2; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+    h2.sec-title { font-size: 20px; font-weight: 600; margin-bottom: 6px; padding-top: 48px; border-top: 1px solid #e5e7eb; }
+    h2.sec-title:first-of-type { border-top: none; padding-top: 0; }
+    .sec-desc { font-size: 14px; color: #6b7280; margin-bottom: 24px; }
+
+    /* CARD GRID */
+    .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 40px; }
+    .doc-card {
+      border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px;
+      text-decoration: none; color: inherit; transition: all .15s;
+      display: block;
+    }
+    .doc-card:hover { border-color: #7CF1F8; background: #f0fdfe; }
+    .doc-card-title { font-size: 14px; font-weight: 600; color: #0891b2; margin-bottom: 5px; display: flex; align-items: center; gap: 7px; }
+    .doc-card-desc { font-size: 13px; color: #6b7280; line-height: 1.5; }
+    .tag { font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 4px; }
+    .tag-teal { background: #e0f7fa; color: #0891b2; }
+    .tag-green { background: #dcfce7; color: #16a34a; }
+    .tag-purple { background: #ede9fe; color: #7c3aed; }
+    .tag-orange { background: #fff7ed; color: #c2410c; }
+
+    /* BROWSE SECTION */
+    .browse-group { margin-bottom: 32px; }
+    .browse-group-label {
+      font-size: 12px; font-weight: 600; color: #9ca3af;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 14px;
+    }
+    .browse-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px 32px; }
+    .browse-item { text-decoration: none; }
+    .browse-item-title { font-size: 13.5px; font-weight: 500; color: #0891b2; margin-bottom: 2px; }
+    .browse-item-title:hover { text-decoration: underline; }
+    .browse-item-desc { font-size: 12.5px; color: #9ca3af; }
+
+    /* CODE BLOCK */
+    .code-block {
+      background: #1e293b; border-radius: 10px; padding: 20px 24px;
+      font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #94a3b8;
+      line-height: 1.8; margin: 16px 0 24px; overflow-x: auto;
+    }
+
+    /* ENDPOINT */
+    .endpoint { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .method { font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 5px; font-family: monospace; }
+    .method.post { background: #dcfce7; color: #15803d; }
+    .method.get  { background: #dbeafe; color: #1d4ed8; }
+    .method.del  { background: #fee2e2; color: #b91c1c; }
+    .method.patch { background: #fff7ed; color: #c2410c; }
+    .endpoint-url { font-family: monospace; font-size: 13px; color: #374151; }
+
+    /* TOC (right) */
+    .toc {
+      width: 200px; flex-shrink: 0;
+      padding: 48px 0 0 24px;
+      position: sticky; top: 52px; height: calc(100vh - 52px); overflow-y: auto;
+    }
+    .toc-label { font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+    .toc-link { display: block; font-size: 12.5px; color: #6b7280; text-decoration: none; padding: 4px 0; transition: color .12s; }
+    .toc-link:hover { color: #0891b2; }
+    .toc-link.on { color: #0891b2; font-weight: 600; }
+
+    /* FOOTER */
+    .page-footer {
+      border-top: 1px solid #e5e7eb; padding: 24px 48px;
+      display: flex; gap: 20px; align-items: center;
+      font-size: 13px; color: #9ca3af;
+      max-width: 1280px; margin: 0 auto; width: 100%;
+    }
+    .page-footer a { color: #0891b2; text-decoration: none; }
+    .page-footer a:hover { text-decoration: underline; }
+    .footer-rate { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+    .rate-btn { border: 1px solid #e5e7eb; padding: 5px 12px; border-radius: 6px; font-size: 12px; color: #6b7280; cursor: pointer; background: none; }
+    .rate-btn:hover { border-color: #0891b2; color: #0891b2; }
+
+    @media (max-width: 1024px) { .toc { display: none; } }
+    @media (max-width: 768px) { .sidebar { display: none; } .main { padding: 24px; } }
   </style>
 </head>
 <body>
-  <div id="brand">
-    <h1>BrandForge Provisioning API</h1>
-    <p>Integration reference for external billing systems</p>
+
+<!-- TOP NAV -->
+<nav class="topnav">
+  <a class="logo" href="#">
+    <div class="logo-mark">B</div>
+    <span class="logo-name">BrandForge</span>
+    <span class="logo-docs">DOCS</span>
+  </a>
+  <ul class="topnav-links">
+    <li><a href="#" class="on">For resellers</a></li>
+    <li><a href="swagger.html">API Reference</a></li>
+    <li><a href="#whmcs">WHMCS</a></li>
+    <li><a href="#upmind">Upmind</a></li>
+  </ul>
+  <div class="topnav-right">
+    <div class="search-bar">
+      <span>Search...</span>
+      <span style="margin-left:auto"><kbd>Ctrl K</kbd></span>
+    </div>
+    <a href="mailto:support@brandhelp.net" class="btn-sm btn-ghost">Support</a>
+    <a href="swagger.html" class="btn-sm btn-teal">API Reference →</a>
   </div>
-  <div id="swagger-ui"></div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui-bundle.min.js"></script>
-  <script>
-    const spec = {"openapi": "3.0.3", "info": {"title": "BrandForge Provisioning API", "version": "1.0.0", "description": "Billing-system-agnostic provisioning API. Any external billing platform\nintegrates against the same endpoints \u2014 there are no provider-specific ones.\n\nSend your own client / service / product identifiers and BrandForge handles\naccount provisioning, plan management, SSO, and usage reporting.\n\n**Authentication:** every request carries the reseller's API key as a Bearer\ntoken. All data is scoped to that reseller.\n"}, "servers": [{"url": "https://brandforge.software/api/godmode/v1", "description": "Production"}, {"url": "https://staging.brandforge.software/api/godmode/v1", "description": "Staging"}], "security": [{"ResellerApiKey": []}], "tags": [{"name": "Connection"}, {"name": "Catalog"}, {"name": "Account"}, {"name": "Plans"}, {"name": "Session"}, {"name": "Status"}], "paths": {"/provision/ping": {"get": {"tags": ["Connection"], "summary": "Test connection", "responses": {"200": {"description": "Service reachable", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Envelope"}}}}}}}, "/provision/packages": {"get": {"tags": ["Catalog"], "summary": "List this reseller's plans", "description": "Returns the reseller's packages. Use `slug` as `plan_code` in later calls.", "responses": {"200": {"description": "Package list", "content": {"application/json": {"schema": {"allOf": [{"$ref": "#/components/schemas/Envelope"}, {"type": "object", "properties": {"data": {"type": "array", "items": {"$ref": "#/components/schemas/Package"}}}}]}}}}}}}, "/provision/create": {"post": {"tags": ["Account"], "summary": "Provision a new account", "description": "Idempotent on email within a reseller. Send external ids to enable billing deep-links.", "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/CreateRequest"}}}}, "responses": {"201": {"description": "Account created", "content": {"application/json": {"schema": {"allOf": [{"$ref": "#/components/schemas/Envelope"}, {"type": "object", "properties": {"data": {"$ref": "#/components/schemas/Account"}}}]}}}}, "409": {"$ref": "#/components/responses/Conflict"}, "422": {"$ref": "#/components/responses/ValidationError"}}}}, "/provision/add_plan": {"post": {"tags": ["Plans"], "summary": "Add an additional plan", "description": "Additive \u2014 existing plans are kept. A customer may hold multiple plans; credits/limits sum across them.", "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "required": ["service_id", "plan_code"], "properties": {"service_id": {"type": "string", "format": "uuid"}, "plan_code": {"type": "string", "example": "brandforge-growth-xxxx"}, "product_id": {"type": "string", "description": "Your billing product id"}}}}}}, "responses": {"200": {"description": "Plan added", "content": {"application/json": {"schema": {"allOf": [{"$ref": "#/components/schemas/Envelope"}, {"type": "object", "properties": {"data": {"type": "object", "properties": {"service_id": {"type": "string"}, "status": {"type": "string", "example": "active"}, "added_plan": {"type": "string"}, "active_plans": {"type": "array", "items": {"type": "string"}}}}}}]}}}}}}}, "/provision/change_package": {"post": {"tags": ["Plans"], "summary": "Replace the plan (upgrade / downgrade)", "description": "Replaces the active plan. Credits/limits carry forward automatically.", "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "required": ["service_id", "plan_code"], "properties": {"service_id": {"type": "string", "format": "uuid"}, "plan_code": {"type": "string"}}}}}}, "responses": {"200": {"description": "Package changed", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Envelope"}}}}}}}, "/provision/suspend": {"post": {"tags": ["Account"], "summary": "Suspend the whole account", "requestBody": {"$ref": "#/components/requestBodies/ServiceId"}, "responses": {"200": {"$ref": "#/components/responses/Ok"}}}}, "/provision/unsuspend": {"post": {"tags": ["Account"], "summary": "Reactivate the whole account", "requestBody": {"$ref": "#/components/requestBodies/ServiceId"}, "responses": {"200": {"$ref": "#/components/responses/Ok"}}}}, "/provision/terminate": {"post": {"tags": ["Account"], "summary": "Cancel the whole account", "requestBody": {"$ref": "#/components/requestBodies/ServiceId"}, "responses": {"200": {"$ref": "#/components/responses/Ok"}}}}, "/provision/suspend_plan": {"post": {"tags": ["Plans"], "summary": "Suspend one plan (multi-plan account)", "requestBody": {"$ref": "#/components/requestBodies/ServiceIdPlan"}, "responses": {"200": {"$ref": "#/components/responses/PlanResult"}}}}, "/provision/unsuspend_plan": {"post": {"tags": ["Plans"], "summary": "Reactivate one plan", "requestBody": {"$ref": "#/components/requestBodies/ServiceIdPlan"}, "responses": {"200": {"$ref": "#/components/responses/PlanResult"}}}}, "/provision/terminate_plan": {"post": {"tags": ["Plans"], "summary": "Cancel one plan (others stay active)", "requestBody": {"$ref": "#/components/requestBodies/ServiceIdPlan"}, "responses": {"200": {"$ref": "#/components/responses/PlanResult"}}}}, "/provision/link_account": {"post": {"tags": ["Account"], "summary": "Set / update external billing ids", "description": "For existing accounts, or to refresh ids. Enables upgrade/downgrade deep-links.", "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "required": ["service_id"], "properties": {"service_id": {"type": "string", "format": "uuid"}, "client_id": {"type": "string", "description": "Your billing client id"}, "service_id_external": {"type": "string", "description": "Your billing service id"}, "plan_code": {"type": "string"}, "product_id": {"type": "string", "description": "Your billing product id"}}}}}}, "responses": {"200": {"$ref": "#/components/responses/Ok"}}}}, "/provision/sso": {"post": {"tags": ["Session"], "summary": "Log the customer into BrandForge", "description": "Returns a short-lived login_url; open it and the customer lands authenticated.", "requestBody": {"$ref": "#/components/requestBodies/ServiceId"}, "responses": {"200": {"description": "SSO token issued", "content": {"application/json": {"schema": {"allOf": [{"$ref": "#/components/schemas/Envelope"}, {"type": "object", "properties": {"data": {"type": "object", "properties": {"token": {"type": "string"}, "login_url": {"type": "string", "format": "uri"}, "plans": {"type": "array", "items": {"$ref": "#/components/schemas/PlanEntry"}}}}}}]}}}}}}}, "/provision/status": {"get": {"tags": ["Status"], "summary": "Current plan, credits, and workspaces", "parameters": [{"in": "query", "name": "service_id", "required": true, "schema": {"type": "string", "format": "uuid"}}], "responses": {"200": {"description": "Status", "content": {"application/json": {"schema": {"allOf": [{"$ref": "#/components/schemas/Envelope"}, {"type": "object", "properties": {"data": {"$ref": "#/components/schemas/Status"}}}]}}}}}}}}, "components": {"securitySchemes": {"ResellerApiKey": {"type": "http", "scheme": "bearer", "description": "Per-reseller API key. Enforces tenant isolation."}}, "requestBodies": {"ServiceId": {"required": true, "content": {"application/json": {"schema": {"type": "object", "required": ["service_id"], "properties": {"service_id": {"type": "string", "format": "uuid"}}}}}}, "ServiceIdPlan": {"required": true, "content": {"application/json": {"schema": {"type": "object", "required": ["service_id", "plan_code"], "properties": {"service_id": {"type": "string", "format": "uuid"}, "plan_code": {"type": "string"}}}}}}}, "responses": {"Ok": {"description": "Success", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Envelope"}}}}, "PlanResult": {"description": "Per-plan result", "content": {"application/json": {"schema": {"allOf": [{"$ref": "#/components/schemas/Envelope"}, {"type": "object", "properties": {"data": {"type": "object", "properties": {"service_id": {"type": "string"}, "plan_code": {"type": "string"}, "status": {"type": "string"}, "active_plans": {"type": "array", "items": {"type": "string"}}}}}}]}}}}, "Conflict": {"description": "Email already used by another account", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Error"}}}}, "ValidationError": {"description": "Missing or invalid parameters", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Error"}}}}}, "schemas": {"Envelope": {"type": "object", "properties": {"success": {"type": "boolean", "example": true}, "message": {"type": "string"}, "data": {"type": "object"}}}, "Error": {"type": "object", "properties": {"success": {"type": "boolean", "example": false}, "error": {"type": "string"}}}, "Package": {"type": "object", "properties": {"id": {"type": "string"}, "name": {"type": "string", "example": "Solo Plan"}, "slug": {"type": "string", "example": "brandforge-solo-xxxx"}, "product_id": {"type": "string", "nullable": true}}}, "CreateRequest": {"type": "object", "required": ["email", "first_name", "plan_code"], "properties": {"email": {"type": "string", "format": "email"}, "first_name": {"type": "string"}, "last_name": {"type": "string"}, "company_name": {"type": "string"}, "plan_code": {"type": "string"}, "password": {"type": "string", "description": "Optional \u2014 omit to auto-generate"}, "domain": {"type": "string"}, "client_id": {"type": "string", "description": "Your billing client id"}, "service_id_external": {"type": "string", "description": "Your billing service id"}, "product_id": {"type": "string", "description": "Your billing product id"}}}, "Account": {"type": "object", "properties": {"service_id": {"type": "string", "format": "uuid"}, "email": {"type": "string"}, "company_name": {"type": "string"}, "status": {"type": "string", "example": "active"}, "plan_code": {"type": "string"}, "domain": {"type": "string", "nullable": true}}}, "PlanEntry": {"type": "object", "properties": {"id": {"type": "string"}, "plan_code": {"type": "string"}, "status": {"type": "string"}, "primary": {"type": "boolean"}, "credits": {"type": "integer"}, "max_workspaces": {"type": "integer"}}}, "Status": {"type": "object", "properties": {"package": {"type": "object", "properties": {"plan_code": {"type": "string"}, "max_workspaces": {"type": "integer"}}}, "credits": {"type": "object", "properties": {"allocated": {"type": "integer"}, "used": {"type": "integer"}, "remaining": {"type": "integer"}, "over_limit": {"type": "boolean"}, "period_end": {"type": "string", "format": "date"}}}, "workspaces": {"type": "object", "properties": {"total": {"type": "integer"}, "active": {"type": "integer"}, "list": {"type": "array", "items": {"type": "object", "properties": {"id": {"type": "string"}, "name": {"type": "string"}, "slug": {"type": "string"}}}}}}}}}}};
-    window.ui = SwaggerUIBundle({
-      spec: spec,
-      dom_id: '#swagger-ui',
-      deepLinking: true,
-      presets: [SwaggerUIBundle.presets.apis],
-      layout: "BaseLayout",
-      docExpansion: "list",
-      defaultModelsExpandDepth: 0
-    });
-  </script>
+</nav>
+
+<div class="layout">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">For Resellers</div>
+      <a class="sidebar-link active" href="#">Quick start guide</a>
+      <a class="sidebar-link" href="#authentication">Authentication</a>
+      <a class="sidebar-link" href="#api-keys">API keys</a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">Integrations</div>
+      <a class="sidebar-link" href="#whmcs">WHMCS module</a>
+      <a class="sidebar-link sub" href="#whmcs-install">Installation</a>
+      <a class="sidebar-link sub" href="#whmcs-config">Configuration</a>
+      <a class="sidebar-link sub" href="#whmcs-provisioning">Provisioning hooks</a>
+      <a class="sidebar-link" href="#upmind">Upmind module</a>
+      <a class="sidebar-link sub" href="#upmind-install">Installation</a>
+      <a class="sidebar-link sub" href="#upmind-webhooks">Webhooks</a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">API Reference</div>
+      <a class="sidebar-link" href="swagger.html">Swagger / OpenAPI ↗</a>
+      <a class="sidebar-link" href="#provisioning-api">Provisioning API</a>
+      <a class="sidebar-link" href="#sso-api">SSO & auth</a>
+      <a class="sidebar-link" href="#plans-api">Plans & packages</a>
+      <a class="sidebar-link" href="#domains-api">Domains</a>
+      <a class="sidebar-link" href="#webhooks">Webhooks</a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">Legal & info</div>
+      <a class="sidebar-link" href="#">Terms of service</a>
+      <a class="sidebar-link" href="#">Privacy policy</a>
+      <a class="sidebar-link" href="#">NAT gateway IPs</a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="main-inner">
+
+      <!-- BREADCRUMB -->
+      <div class="breadcrumb">
+        <a href="#">Docs</a> › <span>Quick start</span>
+      </div>
+
+      <!-- PAGE HEADER -->
+      <h1 class="page-title">BrandForge Developer Documentation</h1>
+      <p class="page-lead">Integrate your billing platform with BrandForge. Provision client accounts, enable SSO login, manage plans and domains — all via our REST API.</p>
+
+      <!-- HERO CARD -->
+      <div class="hero-card">
+        <div class="hero-card-left">
+          <h2>Get started with BrandForge</h2>
+          <p>Use your reseller API key to start provisioning end client accounts in minutes. Supports WHMCS, Upmind, and direct API integration.</p>
+          <div class="hero-btns">
+            <a href="#quickstart" class="btn-primary">Get started →</a>
+            <a href="swagger.html" class="btn-outline">Explore all endpoints</a>
+          </div>
+        </div>
+        <div class="code-mini">
+<span class="cm"># Verify your API key</span>
+<span class="cu">curl</span> -X GET \
+  brandforge.software/api/godmode/v1/provision/ping \
+  -H <span class="cv">"Authorization: Bearer gm_live_..."</span>
+
+<span class="cm"># Response</span>
+{ <span class="ck">"success"</span>: <span class="cv">true</span>, <span class="ck">"data"</span>: { <span class="ck">"status"</span>: <span class="cv">"ok"</span> } }
+        </div>
+      </div>
+
+      <!-- INTEGRATIONS -->
+      <div class="sec-label">Billing integrations</div>
+      <h2 class="sec-title" id="integrations" style="border-top:none; padding-top:0">Connect your billing platform</h2>
+      <p class="sec-desc">Use our official modules to connect WHMCS or Upmind with your BrandForge reseller account.</p>
+
+      <div class="card-grid">
+        <a class="doc-card" href="#whmcs">
+          <div class="doc-card-title">🔧 WHMCS module <span class="tag tag-teal">Model 1</span></div>
+          <div class="doc-card-desc">Provision, suspend, and manage end client accounts directly from your WHMCS billing panel. Supports SSO, plan upgrades, and webhook sync.</div>
+        </a>
+        <a class="doc-card" href="#upmind">
+          <div class="doc-card-title">🚀 Upmind module <span class="tag tag-purple">Model 1</span></div>
+          <div class="doc-card-desc">Automatically create and manage brand builder accounts when customers purchase or upgrade a plan in Upmind.</div>
+        </a>
+        <a class="doc-card" href="#webhooks">
+          <div class="doc-card-title">🔔 Webhooks <span class="tag tag-green">Events</span></div>
+          <div class="doc-card-desc">Receive real-time events for account status changes, payment confirmations, and domain updates.</div>
+        </a>
+        <a class="doc-card" href="swagger.html">
+          <div class="doc-card-title">📄 Swagger / OpenAPI <span class="tag tag-orange">Interactive</span></div>
+          <div class="doc-card-desc">Interactive API explorer. Try endpoints directly in the browser with your API key.</div>
+        </a>
+      </div>
+
+      <!-- QUICK START -->
+      <div class="sec-label">Quick start</div>
+      <h2 class="sec-title" id="quickstart">Get up and running</h2>
+      <p class="sec-desc">Three steps to provision your first end client account.</p>
+
+      <p style="font-size:14px; font-weight:600; margin-bottom:8px; color:#374151;">1. Verify your connection</p>
+      <div class="code-block">
+<span class="cm"># Test your API key</span>
+curl -X GET https://brandforge.software/api/godmode/v1/provision/ping \
+  -H <span class="cv">"Authorization: Bearer gm_live_YOUR_API_KEY"</span>
+      </div>
+
+      <p style="font-size:14px; font-weight:600; margin-bottom:8px; color:#374151;">2. Fetch your available plans</p>
+      <div class="code-block">
+curl -X GET "https://brandforge.software/api/godmode/v1/provision/packages" \
+  -H <span class="cv">"Authorization: Bearer gm_live_YOUR_API_KEY"</span>
+      </div>
+
+      <p style="font-size:14px; font-weight:600; margin-bottom:8px; color:#374151;">3. Create an end client</p>
+      <div class="code-block">
+curl -X POST https://brandforge.software/api/godmode/v1/provision/create \
+  -H <span class="cv">"Authorization: Bearer gm_live_YOUR_API_KEY"</span> \
+  -H <span class="cv">"Content-Type: application/json"</span> \
+  -d '{
+    <span class="ck">"email"</span>:      <span class="cv">"client@example.com"</span>,
+    <span class="ck">"first_name"</span>: <span class="cv">"John"</span>,
+    <span class="ck">"last_name"</span>:  <span class="cv">"Doe"</span>,
+    <span class="ck">"plan_code"</span>:  <span class="cv">"brandforge-solo-xxxxx"</span>
+  }'
+      </div>
+
+      <!-- BROWSE BY PRODUCT -->
+      <h2 class="sec-title" id="api">Browse by product</h2>
+
+      <div class="browse-group">
+        <div class="browse-group-label">Provisioning</div>
+        <div class="browse-grid">
+          <a class="browse-item" href="swagger.html">
+            <div class="browse-item-title">Create account</div>
+            <div class="browse-item-desc">Provision a new end client</div>
+          </a>
+          <a class="browse-item" href="swagger.html">
+            <div class="browse-item-title">Suspend account</div>
+            <div class="browse-item-desc">Temporarily block access</div>
+          </a>
+          <a class="browse-item" href="swagger.html">
+            <div class="browse-item-title">Terminate account</div>
+            <div class="browse-item-desc">Permanently delete a client</div>
+          </a>
+          <a class="browse-item" href="swagger.html">
+            <div class="browse-item-title">Unsuspend account</div>
+            <div class="browse-item-desc">Restore a suspended account</div>
+          </a>
+          <a class="browse-item" href="swagger.html">
+            <div class="browse-item-title">Change plan</div>
+            <div class="browse-item-desc">Upgrade or downgrade a plan</div>
+          </a>
+          <a class="browse-item" href="swagger.html">
+            <div class="browse-item-title">Add pack credits</div>
+            <div class="browse-item-desc">Top up AI credits</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="browse-group">
+        <div class="browse-group-label">Authentication & SSO</div>
+        <div class="browse-grid">
+          <a class="browse-item" href="swagger.html">
+            <div class="browse-item-title">SSO login</div>
+            <div class="browse-item-desc">Generate a one-click login URL</div>
+          </a>
+          <a class="browse-item" href="swagger.html">
+            <div class="browse-item-title">Ping / health check</div>
+            <div class="browse-item-desc">Verify API key and connection</div>
+          </a>
+          <a class="browse-item" href="swagger.html">
+            <div class="browse-item-title">API key info</div>
+            <div class="browse-item-desc">Get your reseller details</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="browse-group">
+        <div class="browse-group-label">Plans & packages</div>
+        <div class="browse-grid">
+          <a class="browse-item" href="swagger.html">
+            <div class="browse-item-title">List packages</div>
+            <div class="browse-item-desc">All plans with pricing</div>
+          </a>
+          <a class="browse-item" href="swagger.html">
+            <div class="browse-item-title">Public plans API</div>
+            <div class="browse-item-desc">Pricing by currency and period</div>
+          </a>
+          <a class="browse-item" href="swagger.html">
+            <div class="browse-item-title">Upgrade URL</div>
+            <div class="browse-item-desc">Generate client upgrade links</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="browse-group">
+        <div class="browse-group-label">Domains</div>
+        <div class="browse-grid">
+          <a class="browse-item" href="swagger.html">
+            <div class="browse-item-title">Domain search</div>
+            <div class="browse-item-desc">Check availability and pricing</div>
+          </a>
+          <a class="browse-item" href="swagger.html">
+            <div class="browse-item-title">Register domain</div>
+            <div class="browse-item-desc">Register a domain for a client</div>
+          </a>
+          <a class="browse-item" href="swagger.html">
+            <div class="browse-item-title">Renew domain</div>
+            <div class="browse-item-desc">Renew an existing registration</div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- RIGHT TOC -->
+  <aside class="toc">
+    <div class="toc-label">On this page</div>
+    <a class="toc-link on" href="#">Get started with BrandForge</a>
+    <a class="toc-link" href="#integrations">Billing integrations</a>
+    <a class="toc-link" href="#quickstart">Quick start</a>
+    <a class="toc-link" href="#api">Browse by product</a>
+    <a class="toc-link" href="#provisioning-api">Provisioning</a>
+    <a class="toc-link" href="#sso-api">SSO & auth</a>
+    <a class="toc-link" href="#plans-api">Plans & packages</a>
+    <a class="toc-link" href="#domains-api">Domains</a>
+  </aside>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="page-footer">
+  <span>© 2026 BrandForge</span>
+  <a href="mailto:support@brandhelp.net">Contact support</a>
+  <a href="swagger.html">API reference</a>
+  <a href="#">Terms</a>
+  <div class="footer-rate">
+    <span style="font-size:13px; color:#9ca3af;">Was this page helpful?</span>
+    <button class="rate-btn">👍 Yes</button>
+    <button class="rate-btn">👎 No</button>
+  </div>
+</footer>
+
 </body>
 </html>
