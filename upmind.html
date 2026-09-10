@@ -1,0 +1,313 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found]){display:none!important}</style></head><body>
+<title>BrandForge Integration Guide</title>
+<style>
+  :root {
+    --paper: #ffffff;
+    --surface: #f5f7fb;
+    --surface-2: #ecf0f8;
+    --line: #e2e6ef;
+    --ink: #171b26;
+    --ink-soft: #565f75;
+    --ink-faint: #8891a6;
+    --accent: #2a52cc;
+    --accent-ink: #1b3899;
+    --accent-soft: #eaf0ff;
+    --accent-line: #c7d6ff;
+    --success: #157f3c;
+    --success-soft: #e6f6ec;
+    --success-line: #bfe6ce;
+    --warn: #8a5a08;
+    --warn-soft: #fff4e0;
+    --warn-line: #f3d79a;
+    --danger: #b3261e;
+    --danger-soft: #fceae9;
+    --danger-line: #f2c6c2;
+    --shadow: 0 1px 2px rgba(23,27,38,0.05), 0 10px 28px -14px rgba(23,27,38,0.16);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0a0d16; --surface: #121728; --surface-2: #1a2136; --line: #262e47;
+      --ink: #e7eaf5; --ink-soft: #a7afc7; --ink-faint: #6e7690;
+      --accent: #85a3ff; --accent-ink: #cdd9ff; --accent-soft: #1b2547; --accent-line: #35437a;
+      --success: #56d693; --success-soft: #102419; --success-line: #1f4a34;
+      --warn: #e7b356; --warn-soft: #2b2110; --warn-line: #5b4520;
+      --danger: #f0938c; --danger-soft: #2b1414; --danger-line: #5a2624;
+      --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 10px 28px -14px rgba(0,0,0,0.6);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0a0d16; --surface: #121728; --surface-2: #1a2136; --line: #262e47;
+    --ink: #e7eaf5; --ink-soft: #a7afc7; --ink-faint: #6e7690;
+    --accent: #85a3ff; --accent-ink: #cdd9ff; --accent-soft: #1b2547; --accent-line: #35437a;
+    --success: #56d693; --success-soft: #102419; --success-line: #1f4a34;
+    --warn: #e7b356; --warn-soft: #2b2110; --warn-line: #5b4520;
+    --danger: #f0938c; --danger-soft: #2b1414; --danger-line: #5a2624;
+    --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 10px 28px -14px rgba(0,0,0,0.6);
+  }
+
+  * { box-sizing: border-box; }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition-duration: 0.001ms !important; animation-duration: 0.001ms !important; }
+  }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", ui-sans-serif, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.55; -webkit-font-smoothing: antialiased;
+  }
+  code, .mono { font-family: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+
+  .shell { max-width: 1080px; margin: 0 auto; padding: 48px 24px 100px; display: grid; grid-template-columns: 210px minmax(0,1fr); gap: 44px; align-items: start; }
+  @media (max-width: 860px) { .shell { grid-template-columns: 1fr; } }
+  .toc { position: sticky; top: 24px; display: flex; flex-direction: column; gap: 2px; }
+  .toc .toc-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-faint); margin: 0 0 10px; }
+  .toc a { font-size: 13px; color: var(--ink-soft); text-decoration: none; padding: 6px 10px; border-radius: 8px; }
+  .toc a:hover { background: var(--surface); color: var(--ink); }
+  @media (max-width: 860px) { .toc { position: static; flex-direction: row; flex-wrap: wrap; gap: 6px; } }
+
+  main { min-width: 0; }
+  .eyebrow { font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-ink); margin: 0 0 10px; }
+  h1 { font-size: 33px; line-height: 1.14; letter-spacing: -0.015em; margin: 0 0 14px; text-wrap: balance; font-weight: 700; }
+  .lede { font-size: 16px; color: var(--ink-soft); max-width: 66ch; margin: 0 0 18px; }
+  .meta-row { display: flex; gap: 18px; flex-wrap: wrap; font-size: 13px; color: var(--ink-faint); margin-bottom: 32px; padding-bottom: 26px; border-bottom: 1px solid var(--line); }
+  .meta-row strong { color: var(--ink-soft); font-weight: 600; }
+  .meta-row .mono { background: var(--surface); border: 1px solid var(--line); padding: 1px 6px; border-radius: 5px; font-size: 12.5px; color: var(--ink-soft); }
+
+  section.block { margin: 0 0 42px; scroll-margin-top: 24px; }
+  section.block h2 { font-size: 21px; margin: 0 0 6px; letter-spacing: -0.01em; }
+  section.block > p.sub { font-size: 14.5px; color: var(--ink-faint); margin: 0 0 18px; max-width: 68ch; }
+  section.block p { font-size: 15px; margin: 0 0 14px; max-width: 70ch; }
+  section.block ul.plain { margin: 0 0 14px; padding-left: 20px; font-size: 14.5px; }
+  section.block ul.plain li { margin: 6px 0; color: var(--ink); }
+  section.block ul.plain li::marker { color: var(--accent); }
+
+  .notice { border-radius: 10px; padding: 13px 16px; font-size: 13.5px; margin: 0 0 18px; border: 1px solid; display: flex; gap: 10px; }
+  .notice .icon { flex: none; font-size: 14px; line-height: 1.5; }
+  .notice.info { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent-ink); }
+  .notice.success { background: var(--success-soft); border-color: var(--success-line); color: var(--success); }
+
+  /* endpoint chips */
+  .ep { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; margin: 2px 0; }
+  .ep .m { font-weight: 700; font-size: 11px; padding: 2px 7px; border-radius: 5px; letter-spacing: 0.02em; }
+  .ep .m.get { color: var(--success); background: var(--success-soft); border: 1px solid var(--success-line); }
+  .ep .m.post { color: var(--accent-ink); background: var(--accent-soft); border: 1px solid var(--accent-line); }
+  .ep .p { color: var(--ink); }
+
+  /* flow steps */
+  .flow-steps { display: flex; flex-direction: column; gap: 0; margin: 6px 0 20px; }
+  .flow-step { display: grid; grid-template-columns: 28px 1fr; gap: 14px; padding: 14px 0; border-top: 1px solid var(--line); }
+  .flow-step:first-child { border-top: none; padding-top: 0; }
+  .flow-step .fn { width: 28px; height: 28px; border-radius: 8px; background: var(--accent-soft); color: var(--accent-ink); border: 1px solid var(--accent-line); display: grid; place-items: center; font-weight: 700; font-size: 12.5px; }
+  .flow-step h4 { margin: 2px 0 4px; font-size: 15px; }
+  .flow-step p { margin: 0; font-size: 14px; color: var(--ink-soft); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 8px 0 18px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  thead th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-faint); background: var(--surface); padding: 9px 12px; border-bottom: 1px solid var(--line); font-weight: 700; }
+  tbody td { padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; color: var(--ink-soft); }
+  tbody tr:last-child td { border-bottom: none; }
+  td.col1 { color: var(--ink); }
+  .table-wrap { overflow-x: auto; }
+
+  .decision {
+    border: 1px solid var(--line); border-radius: 12px; overflow: hidden; margin: 6px 0 20px;
+  }
+  .drow { display: grid; grid-template-columns: 1fr 1.4fr; gap: 0; border-top: 1px solid var(--line); }
+  .drow:first-child { border-top: none; }
+  .drow > div { padding: 14px 16px; font-size: 14px; }
+  .drow .cond { background: var(--surface); color: var(--ink); font-weight: 600; border-right: 1px solid var(--line); }
+  .drow .action { color: var(--ink-soft); }
+  .drow .action .ep { display: flex; margin-bottom: 4px; }
+
+  .codeblock {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 14px 16px; font-size: 12.5px; overflow-x: auto; margin: 8px 0 18px; color: var(--ink);
+  }
+  .codeblock .k { color: var(--accent-ink); }
+
+  footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--ink-faint); }
+
+  @media print {
+    .toc { display: none; }
+    .shell { display: block; padding: 0 12px; max-width: 100%; }
+    section.block { break-inside: avoid; }
+    body { background: white; }
+  }
+</style>
+
+<div class="shell">
+  <nav class="toc">
+    <p class="toc-label">Contents</p>
+    <a href="#overview">Overview</a>
+    <a href="#getting-started">Getting started</a>
+    <a href="#catalog">Your product catalog</a>
+    <a href="#provisioning">Provisioning an order</a>
+    <a href="#lifecycle">Suspend / cancel</a>
+    <a href="#sso">Getting the customer in</a>
+    <a href="#linking">Linking billing IDs</a>
+    <a href="#status">Usage &amp; status</a>
+    <a href="#errors">Errors</a>
+    <a href="#environments">Environments</a>
+    <a href="#reference">Endpoint reference</a>
+  </nav>
+
+  <main>
+    <p class="eyebrow">BrandForge · Integration Guide</p>
+    <h1>Integrating BrandForge into Upmind</h1>
+    <p class="lede">This is the flow-level companion to the attached OpenAPI spec (<code class="mono">BrandForge_Provisioning_API_Swagger.html</code>) — what to call, in what order, and how a customer actually ends up inside their BrandForge workspace.</p>
+    <div class="meta-row">
+      <span><strong>Auth:</strong> one Bearer API key per reseller, issued from your BrandForge reseller dashboard</span>
+      <span><strong>Base path:</strong> <span class="mono">/api/godmode/v1</span></span>
+      <span><strong>Format:</strong> JSON in, JSON out — every response wraps in <span class="mono">{ success, message, data }</span></span>
+    </div>
+
+    <section class="block" id="overview">
+      <h2>Overview</h2>
+      <p>BrandForge is the product; Godmode is the API that provisions it. There is one API key per reseller — every request scoped to that key only ever sees and affects that reseller's own customers. There's nothing WHMCS-specific in this contract: the same endpoints already power our own WHMCS integration, and you're building against the identical surface.</p>
+      <p>The shape of the integration is simple: your platform is the source of truth for billing and orders; Godmode is the source of truth for the actual BrandForge account, its plan(s), and its workspaces. Your job is to call the right endpoint at the right lifecycle moment — order placed, order suspended, order cancelled, plan changed — and to give the customer a way back into BrandForge afterward.</p>
+    </section>
+
+    <section class="block" id="getting-started">
+      <h2>Getting started</h2>
+      <p>Two calls to confirm your credentials work and to see what you're selling:</p>
+      <div class="ep"><span class="m get">GET</span><span class="p mono">/provision/ping</span></div>
+      <p style="margin-top:4px">Confirms your API key is valid and the service is reachable. No side effects.</p>
+      <div class="ep"><span class="m get">GET</span><span class="p mono">/provision/packages</span></div>
+      <p style="margin-top:4px">Returns every package this reseller sells. Each one's <code class="mono">slug</code> is the <code class="mono">plan_code</code> you'll use in every provisioning call below — map one Upmind product to one <code class="mono">plan_code</code>.</p>
+    </section>
+
+    <section class="block" id="catalog">
+      <h2>Your product catalog</h2>
+      <p>There's no bulk "sync all packages" endpoint in this API — <code class="mono">GET /provision/packages</code> is a read, not a push. The reseller (or your onboarding flow) creates one Upmind product per BrandForge package and stores that package's <code class="mono">slug</code> against it. From then on, that stored <code class="mono">plan_code</code> is what every provisioning call below refers to.</p>
+    </section>
+
+    <section class="block" id="provisioning">
+      <h2>Provisioning an order</h2>
+      <p class="sub">Three different calls, depending on what the customer already has. This is the one branch your provisioning logic needs to get right.</p>
+      <div class="decision">
+        <div class="drow">
+          <div class="cond">Brand-new customer</div>
+          <div class="action">
+            <div class="ep"><span class="m post">POST</span><span class="p mono">/provision/create</span></div>
+            Creates the account and its first plan in one call. Idempotent on email within your reseller scope — calling it twice for the same email returns the existing account rather than erroring, so it's safe to retry.
+          </div>
+        </div>
+        <div class="drow">
+          <div class="cond">Existing customer buying an <em>additional</em> plan</div>
+          <div class="action">
+            <div class="ep"><span class="m post">POST</span><span class="p mono">/provision/add_plan</span></div>
+            Additive — their existing plan(s) stay active. Credits and workspace limits sum across every active plan. A customer can hold the same plan more than once, or several different ones at once; each purchase is its own plan record under the one account.
+          </div>
+        </div>
+        <div class="drow">
+          <div class="cond">Existing plan upgraded/downgraded in place</div>
+          <div class="action">
+            <div class="ep"><span class="m post">POST</span><span class="p mono">/provision/change_package</span></div>
+            Replaces the active plan with a new one — use this for a straight swap, not for adding a second concurrent plan. Credits/limits carry forward.
+          </div>
+        </div>
+      </div>
+      <div class="notice info">
+        <span class="icon">ℹ</span>
+        <span>Send <code class="mono">client_id</code> / <code class="mono">service_id_external</code> / <code class="mono">product_id</code> with <code class="mono">create</code> and <code class="mono">add_plan</code> — your own identifiers for this customer/order/product. We store them and hand them back on every response, so your webhooks and ours stay reconciled without a lookup table on either side.</span>
+      </div>
+    </section>
+
+    <section class="block" id="lifecycle">
+      <h2>Suspend, reactivate, cancel</h2>
+      <p class="sub">Two families of endpoint — whole-account and single-plan. Use the wrong one and you'll affect every plan a customer holds, not just the one order that changed.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>When</th><th>Call</th></tr></thead>
+          <tbody>
+            <tr><td class="col1">Customer holds exactly one plan, or the whole account changes state</td><td><span class="ep"><span class="m post">POST</span><span class="p mono">/provision/suspend</span></span> · <span class="ep"><span class="m post">POST</span><span class="p mono">/provision/unsuspend</span></span> · <span class="ep"><span class="m post">POST</span><span class="p mono">/provision/terminate</span></span></td></tr>
+            <tr><td class="col1">Customer holds multiple plans and only one order changed</td><td><span class="ep"><span class="m post">POST</span><span class="p mono">/provision/suspend_plan</span></span> · <span class="ep"><span class="m post">POST</span><span class="p mono">/provision/unsuspend_plan</span></span> · <span class="ep"><span class="m post">POST</span><span class="p mono">/provision/terminate_plan</span></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Fire these on the same lifecycle events you'd fire against any other provisioning module — order suspended for non-payment, order cancelled, order reactivated.</p>
+    </section>
+
+    <section class="block" id="sso">
+      <h2>Getting the customer into BrandForge</h2>
+      <p class="sub">This is the part you flagged — yes, SSO is the mechanism, and it's a single call.</p>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="fn">1</div>
+          <div><h4>Customer clicks something in their Upmind client area</h4><p>e.g. "Manage BrandForge" / "Launch my workspace" — shown once their order is active.</p></div>
+        </div>
+        <div class="flow-step">
+          <div class="fn">2</div>
+          <div><h4>Your backend calls <span class="mono">POST /provision/sso</span> with <span class="mono">service_id</span></h4><p>Server-to-server — never expose your API key to the browser.</p></div>
+        </div>
+        <div class="flow-step">
+          <div class="fn">3</div>
+          <div><h4>You get back a short-lived <span class="mono">login_url</span></h4><p>Redirect the customer's browser to it (or open it in a new tab). They land inside BrandForge already authenticated as that account.</p></div>
+        </div>
+      </div>
+      <div class="notice success">
+        <span class="icon">✓</span>
+        <span>The response carries more than the spec's summary shows — alongside <code class="mono">login_url</code> you also get the account's current <code class="mono">plans</code>, <code class="mono">credits</code>, and reseller <code class="mono">branding</code> (logo, colors) in the same call, if you want to render any of that in your own client area before the customer clicks through.</span>
+      </div>
+    </section>
+
+    <section class="block" id="linking">
+      <h2>Linking billing IDs after the fact</h2>
+      <div class="ep"><span class="m post">POST</span><span class="p mono">/provision/link_account</span></div>
+      <p style="margin-top:8px">For an account that already exists — set or refresh <code class="mono">client_id</code> / <code class="mono">service_id_external</code> / <code class="mono">product_id</code> without re-provisioning anything. Use this if those identifiers weren't available at <code class="mono">create</code> time, or change later (e.g. the order gets re-parented to a different Upmind product).</p>
+    </section>
+
+    <section class="block" id="status">
+      <h2>Checking usage &amp; status</h2>
+      <div class="ep"><span class="m get">GET</span><span class="p mono">/provision/status?service_id=...</span></div>
+      <p style="margin-top:8px">Current plan, credit balance (allocated / used / remaining / over-limit), and the customer's workspaces. Poll this if you want to surface usage inside your own client area rather than sending the customer to BrandForge to see it.</p>
+    </section>
+
+    <section class="block" id="errors">
+      <h2>Errors</h2>
+      <p>Every response is one shape:</p>
+      <div class="codeblock mono">{ <span class="k">"success"</span>: true, <span class="k">"message"</span>: "...", <span class="k">"data"</span>: { ... } }</div>
+      <p>Failures flip <code class="mono">success</code> to <code class="mono">false</code> and drop <code class="mono">data</code> for an <code class="mono">error</code> string. The one you'll hit most: <code class="mono">create</code> returns <span class="mono">409</span> if the email is already registered under a <em>different</em> account than the one you're operating on — everything else is <span class="mono">422</span> for a missing/invalid field.</p>
+    </section>
+
+    <section class="block" id="environments">
+      <h2>Environments</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Environment</th><th>Base URL</th></tr></thead>
+          <tbody>
+            <tr><td class="col1">Staging (build against this first)</td><td class="mono">https://staging.brandforge.software/api/godmode/v1</td></tr>
+            <tr><td class="col1">Production</td><td class="mono">https://brandforge.software/api/godmode/v1</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>We'll issue a staging API key on request — ping us once you're ready to start integrating and we'll get one over.</p>
+    </section>
+
+    <section class="block" id="reference">
+      <h2>Endpoint reference</h2>
+      <p class="sub">Full request/response schemas are in the attached spec — this is just the map of what's covered above.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Endpoint</th><th>Covered above</th></tr></thead>
+          <tbody>
+            <tr><td class="col1 mono">GET /provision/ping</td><td>Getting started</td></tr>
+            <tr><td class="col1 mono">GET /provision/packages</td><td>Getting started, Your product catalog</td></tr>
+            <tr><td class="col1 mono">POST /provision/create</td><td>Provisioning an order</td></tr>
+            <tr><td class="col1 mono">POST /provision/add_plan</td><td>Provisioning an order</td></tr>
+            <tr><td class="col1 mono">POST /provision/change_package</td><td>Provisioning an order</td></tr>
+            <tr><td class="col1 mono">POST /provision/suspend · unsuspend · terminate</td><td>Suspend, reactivate, cancel</td></tr>
+            <tr><td class="col1 mono">POST /provision/suspend_plan · unsuspend_plan · terminate_plan</td><td>Suspend, reactivate, cancel</td></tr>
+            <tr><td class="col1 mono">POST /provision/link_account</td><td>Linking billing IDs after the fact</td></tr>
+            <tr><td class="col1 mono">POST /provision/sso</td><td>Getting the customer into BrandForge</td></tr>
+            <tr><td class="col1 mono">GET /provision/status</td><td>Checking usage &amp; status</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>
+      Questions on any of this — reach out directly rather than guessing at intent from the spec alone; we'd rather answer a question up front than debug an integration built on an assumption.
+    </footer>
+  </main>
+</div>
+
+</body></html>
