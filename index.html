@@ -225,16 +225,16 @@
   <aside class="sidebar">
     <div class="sidebar-group">
       <div class="sidebar-group-label">For Resellers</div>
-      <a class="sidebar-link active" href="onboarding.html">Quick start guide</a>
+      <a class="sidebar-link active" href="onboarding.html">WHMCS Integration Guide</a>
       <a class="sidebar-link" href="#authentication">Authentication</a>
       <a class="sidebar-link" href="#api-keys">API keys</a>
     </div>
     <div class="sidebar-group">
       <div class="sidebar-group-label">Integrations</div>
-      <a class="sidebar-link" href="#whmcs">WHMCS module</a>
-      <a class="sidebar-link sub" href="#whmcs-install">Installation</a>
-      <a class="sidebar-link sub" href="#whmcs-config">Configuration</a>
-      <a class="sidebar-link sub" href="#whmcs-provisioning">Provisioning hooks</a>
+      <a class="sidebar-link" href="onboarding.html">WHMCS module</a>
+      <a class="sidebar-link sub" href="onboarding.html#installation">Installation</a>
+      <a class="sidebar-link sub" href="onboarding.html#configuration">Configuration</a>
+      <a class="sidebar-link sub" href="onboarding.html#provisioning">Provisioning hooks</a>
       <a class="sidebar-link" href="upmind.html">Upmind module</a>
       <a class="sidebar-link sub" href="upmind.html#installation">Installation</a>
       <a class="sidebar-link sub" href="upmind.html#webhooks">Webhooks</a>
@@ -296,7 +296,7 @@
       <p class="sec-desc">Use our official modules to connect WHMCS or Upmind with your BrandForge reseller account.</p>
 
       <div class="card-grid">
-        <a class="doc-card" href="#whmcs">
+        <a class="doc-card" href="onboarding.html">
           <div class="doc-card-title">🔧 WHMCS module <span class="tag tag-teal">Model 1</span></div>
           <div class="doc-card-desc">Provision, suspend, and manage end client accounts directly from your WHMCS billing panel. Supports SSO, plan upgrades, and webhook sync.</div>
         </a>
@@ -345,93 +345,6 @@ curl -X POST https://brandforge.software/api/godmode/v1/provision/create \
   }'
       </div>
 
-      <!-- BROWSE BY PRODUCT -->
-      <h2 class="sec-title" id="api">Browse by product</h2>
-
-      <div class="browse-group">
-        <div class="browse-group-label">Provisioning</div>
-        <div class="browse-grid">
-          <a class="browse-item" href="swagger.html">
-            <div class="browse-item-title">Create account</div>
-            <div class="browse-item-desc">Provision a new end client</div>
-          </a>
-          <a class="browse-item" href="swagger.html">
-            <div class="browse-item-title">Suspend account</div>
-            <div class="browse-item-desc">Temporarily block access</div>
-          </a>
-          <a class="browse-item" href="swagger.html">
-            <div class="browse-item-title">Terminate account</div>
-            <div class="browse-item-desc">Permanently delete a client</div>
-          </a>
-          <a class="browse-item" href="swagger.html">
-            <div class="browse-item-title">Unsuspend account</div>
-            <div class="browse-item-desc">Restore a suspended account</div>
-          </a>
-          <a class="browse-item" href="swagger.html">
-            <div class="browse-item-title">Change plan</div>
-            <div class="browse-item-desc">Upgrade or downgrade a plan</div>
-          </a>
-          <a class="browse-item" href="swagger.html">
-            <div class="browse-item-title">Add pack credits</div>
-            <div class="browse-item-desc">Top up AI credits</div>
-          </a>
-        </div>
-      </div>
-
-      <div class="browse-group">
-        <div class="browse-group-label">Authentication & SSO</div>
-        <div class="browse-grid">
-          <a class="browse-item" href="swagger.html">
-            <div class="browse-item-title">SSO login</div>
-            <div class="browse-item-desc">Generate a one-click login URL</div>
-          </a>
-          <a class="browse-item" href="swagger.html">
-            <div class="browse-item-title">Ping / health check</div>
-            <div class="browse-item-desc">Verify API key and connection</div>
-          </a>
-          <a class="browse-item" href="swagger.html">
-            <div class="browse-item-title">API key info</div>
-            <div class="browse-item-desc">Get your reseller details</div>
-          </a>
-        </div>
-      </div>
-
-      <div class="browse-group">
-        <div class="browse-group-label">Plans & packages</div>
-        <div class="browse-grid">
-          <a class="browse-item" href="swagger.html">
-            <div class="browse-item-title">List packages</div>
-            <div class="browse-item-desc">All plans with pricing</div>
-          </a>
-          <a class="browse-item" href="swagger.html">
-            <div class="browse-item-title">Public plans API</div>
-            <div class="browse-item-desc">Pricing by currency and period</div>
-          </a>
-          <a class="browse-item" href="swagger.html">
-            <div class="browse-item-title">Upgrade URL</div>
-            <div class="browse-item-desc">Generate client upgrade links</div>
-          </a>
-        </div>
-      </div>
-
-      <div class="browse-group">
-        <div class="browse-group-label">Domains</div>
-        <div class="browse-grid">
-          <a class="browse-item" href="swagger.html">
-            <div class="browse-item-title">Domain search</div>
-            <div class="browse-item-desc">Check availability and pricing</div>
-          </a>
-          <a class="browse-item" href="swagger.html">
-            <div class="browse-item-title">Register domain</div>
-            <div class="browse-item-desc">Register a domain for a client</div>
-          </a>
-          <a class="browse-item" href="swagger.html">
-            <div class="browse-item-title">Renew domain</div>
-            <div class="browse-item-desc">Renew an existing registration</div>
-          </a>
-        </div>
-      </div>
-
     </div>
   </main>
 
@@ -456,11 +369,7 @@ curl -X POST https://brandforge.software/api/godmode/v1/provision/create \
   <a href="mailto:support@brandhelp.net">Contact support</a>
   <a href="swagger.html">API reference</a>
   <a href="#">Terms</a>
-  <div class="footer-rate">
-    <span style="font-size:13px; color:#9ca3af;">Was this page helpful?</span>
-    <button class="rate-btn">👍 Yes</button>
-    <button class="rate-btn">👎 No</button>
-  </div>
+  
 </footer>
 
 </body>
