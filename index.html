@@ -4,53 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BrandForge Developer Docs</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <meta name="description" content="Integrate your billing platform with BrandForge: provision client accounts, enable SSO login, and manage plans and domains over the Provisioning API." />
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/assets/tokens.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background: #fff; color: #111; font-size: 15px; line-height: 1.65; display: flex; flex-direction: column; min-height: 100vh; }
-
-    /* TOP NAV */
-    .topnav {
-      position: sticky; top: 0; z-index: 200;
-      background: #fff; border-bottom: 1px solid #e5e7eb;
-      height: 52px; display: flex; align-items: center;
-      padding: 0 24px; gap: 32px;
-    }
-    .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
-    .logo-mark {
-      width: 26px; height: 26px; border-radius: 6px;
-      background: linear-gradient(135deg, #7CF1F8, #22d3ee);
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 12px; color: #0f172a;
-    }
-    .logo-name { font-size: 15px; font-weight: 700; color: #111; }
-    .logo-docs { font-size: 12px; font-weight: 600; color: #0891b2; background: #e0f7fa; padding: 2px 7px; border-radius: 4px; }
-    .topnav-links { display: flex; gap: 0; list-style: none; margin-left: 8px; }
-    .topnav-links a {
-      font-size: 13.5px; font-weight: 500; color: #6b7280;
-      text-decoration: none; padding: 0 12px; height: 52px;
-      display: flex; align-items: center;
-      border-bottom: 2px solid transparent;
-      transition: color .15s, border-color .15s;
-    }
-    .topnav-links a:hover { color: #111; }
-    .topnav-links a.on { color: #0891b2; border-bottom-color: #7CF1F8; }
-    .topnav-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
-    .btn-sm {
-      padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600;
-      text-decoration: none; transition: all .15s;
-    }
-    .btn-ghost { color: #374151; border: 1px solid #e5e7eb; }
-    .btn-ghost:hover { border-color: #9ca3af; }
-    .btn-teal { background: #7CF1F8; color: #0f172a; }
-    .btn-teal:hover { background: #22d3ee; }
-    .search-bar {
-      display: flex; align-items: center; gap: 8px;
-      border: 1px solid #e5e7eb; border-radius: 6px;
-      padding: 5px 12px; font-size: 13px; color: #9ca3af;
-      cursor: pointer; min-width: 180px;
-    }
-    .search-bar kbd { font-size: 11px; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 3px; padding: 1px 5px; color: #6b7280; }
+    body { font-size: 15px; line-height: 1.65; display: flex; flex-direction: column; min-height: 100vh; }
 
     /* LAYOUT */
     .layout { display: flex; flex: 1; max-width: 1280px; margin: 0 auto; width: 100%; }
@@ -58,13 +17,13 @@
     /* SIDEBAR */
     .sidebar {
       width: 240px; flex-shrink: 0;
-      border-right: 1px solid #e5e7eb;
+      border-right: 1px solid var(--border);
       padding: 24px 0;
-      position: sticky; top: 52px; height: calc(100vh - 52px); overflow-y: auto;
+      position: sticky; top: var(--height-nav); height: calc(100vh - var(--height-nav)); overflow-y: auto;
     }
     .sidebar-group { margin-bottom: 24px; }
     .sidebar-group-label {
-      font-size: 11px; font-weight: 700; color: #9ca3af;
+      font-size: 11px; font-weight: 700; color: var(--muted-foreground);
       text-transform: uppercase; letter-spacing: 0.8px;
       padding: 0 20px; margin-bottom: 4px;
     }
@@ -73,8 +32,8 @@
       color: #374151; text-decoration: none;
       padding: 6px 20px; transition: all .12s;
     }
-    .sidebar-link:hover { color: #0891b2; background: #f0fdfe; }
-    .sidebar-link.active { color: #0891b2; font-weight: 600; background: #e0f7fa; border-right: 2px solid #7CF1F8; }
+    .sidebar-link:hover { color: var(--accent-strong); background: var(--muted); }
+    .sidebar-link.active { color: var(--accent-strong); font-weight: 600; background: var(--muted); border-right: 2px solid var(--accent); }
     .sidebar-link.sub { padding-left: 32px; font-size: 13px; }
 
     /* MAIN CONTENT */
@@ -82,195 +41,140 @@
     .main-inner { max-width: 720px; }
 
     /* BREADCRUMB */
-    .breadcrumb { font-size: 12px; color: #9ca3af; margin-bottom: 24px; display: flex; gap: 6px; align-items: center; }
-    .breadcrumb a { color: #0891b2; text-decoration: none; }
+    .breadcrumb { font-size: 12px; color: var(--muted-foreground); margin-bottom: 24px; display: flex; gap: 6px; align-items: center; }
+    .breadcrumb a { color: var(--accent-strong); text-decoration: none; }
     .breadcrumb a:hover { text-decoration: underline; }
 
     /* PAGE HEADER */
-    .page-title { font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 12px; color: #111; }
-    .page-lead { font-size: 16px; color: #6b7280; margin-bottom: 40px; max-width: 600px; line-height: 1.6; }
+    .page-title { font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 12px; color: var(--foreground); }
+    .page-lead { font-size: 16px; color: var(--muted-foreground); margin-bottom: var(--spacing-section-gap); max-width: 600px; line-height: 1.6; }
 
     /* HERO CARD */
     .hero-card {
-      background: linear-gradient(135deg, #f0fdfe 0%, #e0f7fa 100%);
-      border: 1px solid #a5f3fc; border-radius: 12px;
-      padding: 32px 36px; margin-bottom: 40px;
-      display: flex; gap: 40px; align-items: flex-start;
+      background: linear-gradient(135deg, var(--surface-suggestion, #F6FDFE) 0%, var(--accent-soft) 100%);
+      border: 1px solid var(--accent-soft); border-radius: var(--radius-2xl);
+      padding: var(--spacing-card) 36px; margin-bottom: var(--spacing-section-gap);
     }
-    .hero-card-left { flex: 1; }
-    .hero-card-left h2 { font-size: 18px; font-weight: 600; margin-bottom: 8px; color: #0f172a; }
-    .hero-card-left p { font-size: 14px; color: #0891b2; line-height: 1.6; }
-    .hero-btns { display: flex; gap: 10px; margin-top: 20px; }
-    .btn-primary { background: #0891b2; color: #fff; padding: 9px 18px; border-radius: 7px; font-size: 13.5px; font-weight: 600; text-decoration: none; transition: background .15s; }
-    .btn-primary:hover { background: #0e7490; }
-    .btn-outline { border: 1px solid #0891b2; color: #0891b2; padding: 9px 18px; border-radius: 7px; font-size: 13.5px; font-weight: 600; text-decoration: none; transition: all .15s; }
-    .btn-outline:hover { background: #e0f7fa; }
+    .hero-card-top { display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start; }
+    .hero-card-left { flex: 1 1 280px; min-width: 0; }
+    .hero-card-left h2 { font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--foreground); }
+    .hero-card-left p { font-size: 14px; color: var(--accent-strong); line-height: 1.6; }
+    .hero-btns { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
     .code-mini {
-      background: #1e293b; border-radius: 10px; padding: 16px 20px;
-      font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #94a3b8;
-      line-height: 1.8; width: 320px; flex-shrink: 0;
+      background: #1e293b; border-radius: var(--radius-xl); padding: 16px 20px;
+      font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: 12px; color: #94a3b8;
+      line-height: 1.8; flex: 1 1 300px; max-width: 320px; min-width: 0;
+      white-space: pre-wrap; overflow-wrap: anywhere;
     }
     .cm { color: #475569; }
-    .ck { color: #7CF1F8; }
+    .ck { color: var(--accent); }
     .cv { color: #86efac; }
     .cu { color: #93c5fd; }
 
     /* SECTION HEADINGS */
-    .sec-label { font-size: 11px; font-weight: 700; color: #0891b2; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-    h2.sec-title { font-size: 20px; font-weight: 600; margin-bottom: 6px; padding-top: 48px; border-top: 1px solid #e5e7eb; }
+    .sec-label { font-size: 11px; font-weight: 700; color: var(--accent-strong); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+    h2.sec-title { font-size: 20px; font-weight: 600; margin-bottom: 6px; padding-top: var(--spacing-section-gap); border-top: 1px solid var(--border); }
     h2.sec-title:first-of-type { border-top: none; padding-top: 0; }
-    .sec-desc { font-size: 14px; color: #6b7280; margin-bottom: 24px; }
+    .sec-desc { font-size: 14px; color: var(--muted-foreground); margin-bottom: 24px; }
 
     /* CARD GRID */
-    .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 40px; }
+    .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: var(--spacing-section-gap); }
     .doc-card {
-      border: 1px solid #e5e7eb; border-radius: 10px; padding: 20px;
+      border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px;
       text-decoration: none; color: inherit; transition: all .15s;
       display: block;
     }
-    .doc-card:hover { border-color: #7CF1F8; background: #f0fdfe; }
-    .doc-card-title { font-size: 14px; font-weight: 600; color: #0891b2; margin-bottom: 5px; display: flex; align-items: center; gap: 7px; }
-    .doc-card-desc { font-size: 13px; color: #6b7280; line-height: 1.5; }
-    .tag { font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 4px; }
-    .tag-teal { background: #e0f7fa; color: #0891b2; }
+    .doc-card:hover { border-color: var(--accent); background: var(--surface-suggestion, #F6FDFE); }
+    .doc-card-title { font-size: 14px; font-weight: 600; color: var(--accent-strong); margin-bottom: 5px; display: flex; align-items: center; gap: 7px; }
+    .doc-card-desc { font-size: 13px; color: var(--muted-foreground); line-height: 1.5; }
+    .tag { font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: var(--radius-md); }
+    .tag-teal { background: var(--muted); color: var(--accent-strong); }
     .tag-green { background: #dcfce7; color: #16a34a; }
-    .tag-purple { background: #ede9fe; color: #7c3aed; }
     .tag-orange { background: #fff7ed; color: #c2410c; }
 
     /* BROWSE SECTION */
     .browse-group { margin-bottom: 32px; }
     .browse-group-label {
-      font-size: 12px; font-weight: 600; color: #9ca3af;
+      font-size: 12px; font-weight: 600; color: var(--muted-foreground);
       text-transform: uppercase; letter-spacing: 0.8px;
-      border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 14px;
+      border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 14px;
     }
     .browse-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px 32px; }
     .browse-item { text-decoration: none; }
-    .browse-item-title { font-size: 13.5px; font-weight: 500; color: #0891b2; margin-bottom: 2px; }
+    .browse-item-title { font-size: 13.5px; font-weight: 500; color: var(--accent-strong); margin-bottom: 2px; }
     .browse-item-title:hover { text-decoration: underline; }
-    .browse-item-desc { font-size: 12.5px; color: #9ca3af; }
+    .browse-item-desc { font-size: 12.5px; color: var(--muted-foreground); }
 
     /* CODE BLOCK */
     .code-block {
-      background: #1e293b; border-radius: 10px; padding: 20px 24px;
-      font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: #94a3b8;
-      line-height: 1.8; margin: 16px 0 24px; overflow-x: auto;
+      background: #1e293b; border-radius: var(--radius-xl); padding: 20px 24px;
+      font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: 12.5px; color: #94a3b8;
+      line-height: 1.8; margin: 16px 0 24px;
+      white-space: pre-wrap; overflow-wrap: anywhere;
     }
-
-    /* ENDPOINT */
-    .endpoint { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-    .method { font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 5px; font-family: monospace; }
-    .method.post { background: #dcfce7; color: #15803d; }
-    .method.get  { background: #dbeafe; color: #1d4ed8; }
-    .method.del  { background: #fee2e2; color: #b91c1c; }
-    .method.patch { background: #fff7ed; color: #c2410c; }
-    .endpoint-url { font-family: monospace; font-size: 13px; color: #374151; }
 
     /* TOC (right) */
     .toc {
       width: 200px; flex-shrink: 0;
       padding: 48px 0 0 24px;
-      position: sticky; top: 52px; height: calc(100vh - 52px); overflow-y: auto;
+      position: sticky; top: var(--height-nav); height: calc(100vh - var(--height-nav)); overflow-y: auto;
     }
-    .toc-label { font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
-    .toc-link { display: block; font-size: 12.5px; color: #6b7280; text-decoration: none; padding: 4px 0; transition: color .12s; }
-    .toc-link:hover { color: #0891b2; }
-    .toc-link.on { color: #0891b2; font-weight: 600; }
+    .toc-label { font-size: 11px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+    .toc-link { display: block; font-size: 12.5px; color: var(--muted-foreground); text-decoration: none; padding: 4px 0; transition: color .12s; }
+    .toc-link:hover { color: var(--accent-strong); }
+    .toc-link.on { color: var(--accent-strong); font-weight: 600; }
 
     /* FOOTER */
     .page-footer {
-      border-top: 1px solid #e5e7eb; padding: 24px 48px;
-      display: flex; gap: 20px; align-items: center;
-      font-size: 13px; color: #9ca3af;
+      border-top: 1px solid var(--border); padding: 24px 48px;
+      display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center;
+      font-size: 13px; color: var(--muted-foreground);
       max-width: 1280px; margin: 0 auto; width: 100%;
     }
-    .page-footer a { color: #0891b2; text-decoration: none; }
+    .page-footer a { color: var(--accent-strong); text-decoration: none; }
     .page-footer a:hover { text-decoration: underline; }
     .footer-rate { margin-left: auto; display: flex; align-items: center; gap: 10px; }
-    .rate-btn { border: 1px solid #e5e7eb; padding: 5px 12px; border-radius: 6px; font-size: 12px; color: #6b7280; cursor: pointer; background: none; }
-    .rate-btn:hover { border-color: #0891b2; color: #0891b2; }
+    .rate-btn { border: 1px solid var(--border); padding: 5px 12px; border-radius: var(--radius-md); font-size: 12px; color: var(--muted-foreground); cursor: pointer; background: none; }
+    .rate-btn:hover { border-color: var(--accent-strong); color: var(--accent-strong); }
 
     @media (max-width: 1024px) { .toc { display: none; } }
-    @media (max-width: 900px) {
-      .toc { display: none; }
-      .sidebar { display: none; }
-      .layout { display: block; }
-    }
-    @media (max-width: 768px) {
-      body { font-size: 14px; }
-      .topnav { padding: 0 16px; gap: 8px; height: 48px; overflow: hidden; }
-      .topnav-links { display: none; }
-      .topnav-right { flex-shrink: 0; }
-      .topnav-right .btn-ghost { display: none; }
-      .search-bar { display: none; }
-      .btn-teal { padding: 6px 10px; font-size: 12px; white-space: nowrap; }
-      .main { padding: 20px 16px 60px; }
-      .breadcrumb { font-size: 11px; margin-bottom: 16px; }
-      .page-title { font-size: 1.6rem; letter-spacing: -0.5px; margin-bottom: 8px; }
-      .page-lead { font-size: 14px; margin-bottom: 24px; }
-      .hero-card { flex-direction: column; padding: 20px; gap: 20px; }
-      .hero-card-left h2 { font-size: 16px; }
-      .hero-card-left p { font-size: 13px; }
-      .hero-btns { flex-direction: column; gap: 8px; }
-      .btn-primary, .btn-outline { padding: 9px 16px; font-size: 13px; text-align: center; }
-      .code-mini { width: 100%; font-size: 11px; padding: 12px 14px; line-height: 1.6; overflow-x: auto; }
-      .doc-card { padding: 16px; }
-      .card-grid { grid-template-columns: 1fr; gap: 12px; }
-      .try-section { grid-template-columns: 1fr; }
-      .try-code { font-size: 11px; padding: 14px; overflow-x: auto; }
-      .browse-grid { grid-template-columns: 1fr 1fr; gap: 12px 20px; }
-      h2.sec-title { font-size: 18px; padding-top: 32px; }
-      .page-footer { flex-direction: column; gap: 8px; padding: 20px 16px; font-size: 12px; }
-      .footer-rate { margin-left: 0; }
-      .logo-docs { display: none; }
-    }
-    @media (max-width: 480px) {
+    @media (max-width: 768px) { .sidebar { display: none; } .main { padding: 24px; } }
+    @media (max-width: 640px) {
+      .card-grid { grid-template-columns: 1fr; }
       .browse-grid { grid-template-columns: 1fr; }
-      .page-title { font-size: 1.4rem; }
+      .page-footer { padding: 20px 24px; }
+      .footer-rate { margin-left: 0; width: 100%; justify-content: space-between; }
     }
   </style>
 </head>
 <body>
 
-<!-- TOP NAV -->
-<nav class="topnav">
-  <a class="logo" href="#">
-    <div class="logo-mark">B</div>
-    <span class="logo-name">BrandForge</span>
-    <span class="logo-docs">DOCS</span>
-  </a>
-  <ul class="topnav-links">
-    <li><a href="onboarding.html">WHMCS Guide</a></li>
-    <li><a href="upmind.html">Upmind Guide</a></li>
-    <li><a href="swagger.html">API Reference</a></li>
-  </ul>
-  <div class="topnav-right">
-    <div class="search-bar">
-      <span>Search...</span>
-      <span style="margin-left:auto"><kbd>Ctrl K</kbd></span>
-    </div>
-    <a href="mailto:support@brandhelp.net" class="btn-sm btn-ghost">Support</a>
-    <a href="swagger.html" class="btn-sm btn-teal">API Reference →</a>
-  </div>
-</nav>
+<!--#include virtual="/partials/_nav.html" -->
 
 <div class="layout">
 
   <!-- LEFT SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-group">
+      <div class="sidebar-group-label">For Resellers</div>
+      <a class="sidebar-link active" href="/whmcs-onboarding">Quick start guide</a>
+    </div>
+    <div class="sidebar-group">
       <div class="sidebar-group-label">Integrations</div>
-      <a class="sidebar-link" href="onboarding.html">WHMCS Integration Guide</a>
-      <a class="sidebar-link" href="upmind.html">Upmind Integration Guide</a>
+      <a class="sidebar-link" href="/whmcs-onboarding#part-b">WHMCS module</a>
+      <a class="sidebar-link sub" href="/whmcs-onboarding#step-c1">Installation</a>
+      <a class="sidebar-link sub" href="/whmcs-onboarding#step-c2">Configuration</a>
+      <a class="sidebar-link sub" href="/whmcs-onboarding#step-c3">Provisioning hooks</a>
     </div>
     <div class="sidebar-group">
       <div class="sidebar-group-label">API Reference</div>
-      <a class="sidebar-link" href="swagger.html">Swagger / OpenAPI ↗</a>
+      <a class="sidebar-link" href="/provisioning-api">Interactive API reference ↗</a>
     </div>
     <div class="sidebar-group">
       <div class="sidebar-group-label">Legal & info</div>
       <a class="sidebar-link" href="#">Terms of service</a>
       <a class="sidebar-link" href="#">Privacy policy</a>
+      <a class="sidebar-link" href="#">NAT gateway IPs</a>
     </div>
   </aside>
 
@@ -280,7 +184,7 @@
 
       <!-- BREADCRUMB -->
       <div class="breadcrumb">
-        <a href="#">Docs</a> › <span>Quick start</span>
+        <a href="/">Docs</a> › <span>Quick start</span>
       </div>
 
       <!-- PAGE HEADER -->
@@ -288,47 +192,49 @@
       <p class="page-lead">Integrate your billing platform with BrandForge. Provision client accounts, enable SSO login, manage plans and domains — all via our REST API.</p>
 
       <!-- HERO CARD -->
-      <div class="hero-card">
-        <div class="hero-card-left">
-          <h2>Get started with BrandForge</h2>
-          <p>Use your reseller API key to start provisioning end client accounts in minutes. Supports WHMCS, Upmind, and direct API integration.</p>
-          <div class="hero-btns">
-            <a href="#quickstart" class="btn-primary">Get started →</a>
-            <a href="swagger.html" class="btn-outline">Explore all endpoints</a>
+      <div class="hero-card" id="get-started">
+        <div class="hero-card-top">
+          <div class="hero-card-left">
+            <h2>Get started with BrandForge</h2>
+            <p>Use your reseller API key to start provisioning end client accounts in minutes. Supports WHMCS and direct API integration.</p>
           </div>
-        </div>
-        <div class="code-mini">
+          <div class="code-mini">
 <span class="cm"># Verify your API key</span>
-<span class="cu">curl</span> -X GET \
-  brandforge.software/api/godmode/v1/provision/ping \
+<span class="cu">curl</span> brandforge.software/…/ping \
   -H <span class="cv">"Authorization: Bearer gm_live_..."</span>
 
 <span class="cm"># Response</span>
-{ <span class="ck">"success"</span>: <span class="cv">true</span>, <span class="ck">"data"</span>: { <span class="ck">"status"</span>: <span class="cv">"ok"</span> } }
+{ <span class="ck">"success"</span>: <span class="cv">true</span>,
+  <span class="ck">"data"</span>: { <span class="ck">"status"</span>: <span class="cv">"ok"</span> } }
+          </div>
+        </div>
+        <div class="hero-btns">
+          <a href="/whmcs-onboarding" class="bf-btn bf-btn-primary">Read the setup guide →</a>
+          <a href="/provisioning-api" class="bf-btn bf-btn-outline">Browse the API reference</a>
         </div>
       </div>
 
       <!-- INTEGRATIONS -->
       <div class="sec-label">Billing integrations</div>
       <h2 class="sec-title" id="integrations" style="border-top:none; padding-top:0">Connect your billing platform</h2>
-      <p class="sec-desc">Use our official modules to connect WHMCS or Upmind with your BrandForge reseller account.</p>
+      <p class="sec-desc">Use our official module to connect WHMCS with your BrandForge reseller account.</p>
 
       <div class="card-grid">
-        <a class="doc-card" href="onboarding.html">
+        <a class="doc-card" href="#whmcs">
           <div class="doc-card-title">🔧 WHMCS module <span class="tag tag-teal">Model 1</span></div>
           <div class="doc-card-desc">Provision, suspend, and manage end client accounts directly from your WHMCS billing panel. Supports SSO, plan upgrades, and webhook sync.</div>
-        </a>
-        <a class="doc-card" href="upmind.html">
-          <div class="doc-card-title">🚀 Upmind module <span class="tag tag-purple">Model 1</span></div>
-          <div class="doc-card-desc">Automatically create and manage brand builder accounts when customers purchase or upgrade a plan in Upmind.</div>
         </a>
         <a class="doc-card" href="#webhooks">
           <div class="doc-card-title">🔔 Webhooks <span class="tag tag-green">Events</span></div>
           <div class="doc-card-desc">Receive real-time events for account status changes, payment confirmations, and domain updates.</div>
         </a>
-        <a class="doc-card" href="swagger.html">
-          <div class="doc-card-title">📄 Swagger / OpenAPI <span class="tag tag-orange">Interactive</span></div>
+        <a class="doc-card" href="/provisioning-api">
+          <div class="doc-card-title">📄 API reference <span class="tag tag-orange">Interactive</span></div>
           <div class="doc-card-desc">Interactive API explorer. Try endpoints directly in the browser with your API key.</div>
+        </a>
+        <a class="doc-card" href="/whmcs-onboarding">
+          <div class="doc-card-title">📘 WHMCS onboarding guide <span class="tag tag-teal">Model 1</span></div>
+          <div class="doc-card-desc">Step-by-step: set up your Godmode workspace, connect WHMCS, and install the module.</div>
         </a>
       </div>
 
@@ -363,20 +269,103 @@ curl -X POST https://brandforge.software/api/godmode/v1/provision/create \
   }'
       </div>
 
+      <!-- BROWSE BY PRODUCT -->
+      <h2 class="sec-title" id="api">Browse by product</h2>
+
+      <div class="browse-group">
+        <div class="browse-group-label">Provisioning</div>
+        <div class="browse-grid">
+          <a class="browse-item" href="/provisioning-api">
+            <div class="browse-item-title">Create account</div>
+            <div class="browse-item-desc">Provision a new end client</div>
+          </a>
+          <a class="browse-item" href="/provisioning-api">
+            <div class="browse-item-title">Suspend account</div>
+            <div class="browse-item-desc">Temporarily block access</div>
+          </a>
+          <a class="browse-item" href="/provisioning-api">
+            <div class="browse-item-title">Terminate account</div>
+            <div class="browse-item-desc">Permanently delete a client</div>
+          </a>
+          <a class="browse-item" href="/provisioning-api">
+            <div class="browse-item-title">Unsuspend account</div>
+            <div class="browse-item-desc">Restore a suspended account</div>
+          </a>
+          <a class="browse-item" href="/provisioning-api">
+            <div class="browse-item-title">Change plan</div>
+            <div class="browse-item-desc">Upgrade or downgrade a plan</div>
+          </a>
+          <a class="browse-item" href="/provisioning-api">
+            <div class="browse-item-title">Add pack credits</div>
+            <div class="browse-item-desc">Top up AI credits</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="browse-group">
+        <div class="browse-group-label">Authentication & SSO</div>
+        <div class="browse-grid">
+          <a class="browse-item" href="/provisioning-api">
+            <div class="browse-item-title">SSO login</div>
+            <div class="browse-item-desc">Generate a one-click login URL</div>
+          </a>
+          <a class="browse-item" href="/provisioning-api">
+            <div class="browse-item-title">Ping / health check</div>
+            <div class="browse-item-desc">Verify API key and connection</div>
+          </a>
+          <a class="browse-item" href="/provisioning-api">
+            <div class="browse-item-title">API key info</div>
+            <div class="browse-item-desc">Get your reseller details</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="browse-group">
+        <div class="browse-group-label">Plans & packages</div>
+        <div class="browse-grid">
+          <a class="browse-item" href="/provisioning-api">
+            <div class="browse-item-title">List packages</div>
+            <div class="browse-item-desc">All plans with pricing</div>
+          </a>
+          <a class="browse-item" href="/provisioning-api">
+            <div class="browse-item-title">Public plans API</div>
+            <div class="browse-item-desc">Pricing by currency and period</div>
+          </a>
+          <a class="browse-item" href="/provisioning-api">
+            <div class="browse-item-title">Upgrade URL</div>
+            <div class="browse-item-desc">Generate client upgrade links</div>
+          </a>
+        </div>
+      </div>
+
+      <div class="browse-group">
+        <div class="browse-group-label">Domains</div>
+        <div class="browse-grid">
+          <a class="browse-item" href="/provisioning-api">
+            <div class="browse-item-title">Domain search</div>
+            <div class="browse-item-desc">Check availability and pricing</div>
+          </a>
+          <a class="browse-item" href="/provisioning-api">
+            <div class="browse-item-title">Register domain</div>
+            <div class="browse-item-desc">Register a domain for a client</div>
+          </a>
+          <a class="browse-item" href="/provisioning-api">
+            <div class="browse-item-title">Renew domain</div>
+            <div class="browse-item-desc">Renew an existing registration</div>
+          </a>
+        </div>
+      </div>
+
     </div>
   </main>
 
   <!-- RIGHT TOC -->
   <aside class="toc">
     <div class="toc-label">On this page</div>
-    <a class="toc-link on" href="#">Get started with BrandForge</a>
+    <a class="toc-link on" href="#get-started">Get started with BrandForge</a>
     <a class="toc-link" href="#integrations">Billing integrations</a>
     <a class="toc-link" href="#quickstart">Quick start</a>
     <a class="toc-link" href="#api">Browse by product</a>
-    <a class="toc-link" href="#provisioning-api">Provisioning</a>
-    <a class="toc-link" href="#sso-api">SSO & auth</a>
-    <a class="toc-link" href="#plans-api">Plans & packages</a>
-    <a class="toc-link" href="#domains-api">Domains</a>
   </aside>
 
 </div>
@@ -384,11 +373,15 @@ curl -X POST https://brandforge.software/api/godmode/v1/provision/create \
 <!-- FOOTER -->
 <footer class="page-footer">
   <span>© 2026 BrandForge</span>
-  <a href="mailto:support@brandhelp.net">Contact support</a>
-  <a href="swagger.html">API reference</a>
+  <a href="/provisioning-api">API reference</a>
   <a href="#">Terms</a>
-  
+  <div class="footer-rate">
+    <span style="font-size:13px; color:var(--muted-foreground);">Was this page helpful?</span>
+    <button class="rate-btn">👍 Yes</button>
+    <button class="rate-btn">👎 No</button>
+  </div>
 </footer>
 
+<script src="/assets/toc-spy.js" defer></script>
 </body>
 </html>

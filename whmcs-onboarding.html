@@ -1,33 +1,26 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found]){display:none!important}</style></head><body>
-  <nav style="position:sticky;top:0;z-index:200;background:#fff;border-bottom:1px solid #e5e7eb;height:52px;display:flex;align-items:center;padding:0 24px;gap:16px;font-family:'Inter',sans-serif;">
-    <a href="index.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
-      <div style="width:26px;height:26px;border-radius:6px;background:linear-gradient(135deg,#7CF1F8,#22d3ee);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#0f172a;">B</div>
-      <span style="font-size:15px;font-weight:700;color:#111;">BrandForge</span>
-      <span style="font-size:12px;font-weight:600;color:#0891b2;background:#e0f7fa;padding:2px 7px;border-radius:4px;">DOCS</span>
-    </a>
-    <span style="color:#e5e7eb;font-size:18px;">/</span>
-    <span style="font-size:14px;font-weight:600;color:#374151;">WHMCS Integration Guide</span>
-    <div style="margin-left:auto;display:flex;gap:8px;">
-      <a href="index.html" style="padding:6px 14px;border-radius:6px;font-size:13px;font-weight:600;color:#374151;border:1px solid #e5e7eb;text-decoration:none;">← Back to docs</a>
-      <a href="swagger.html" style="padding:6px 14px;border-radius:6px;font-size:13px;font-weight:600;background:#7CF1F8;color:#0f172a;text-decoration:none;">API Reference</a>
-    </div>
-  </nav>
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><title>WHMCS Onboarding — BrandForge</title><link rel="icon" href="/assets/logo.svg" type="image/svg+xml"><link rel="stylesheet" href="/assets/tokens.css"><link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found]){display:none!important}</style></head><body>
 
-<title>BrandForge Reseller Onboarding</title>
+<!--#include virtual="/partials/_nav.html" -->
+
 <style>
+  /* Brand tokens mirrored from brand-forge-frontend/app/globals.css —
+     see /assets/tokens.css. --accent here is used as TEXT (eyebrows,
+     links, icons), so it maps to the product's --accent-strong, the
+     token that repo defines specifically for accent text on light
+     surfaces (the pale --accent itself doesn't have enough contrast). */
   :root {
     --paper: #ffffff;
-    --surface: #f5f7fb;
-    --surface-2: #ecf0f8;
-    --line: #e2e6ef;
-    --ink: #171b26;
+    --surface: #F4F6F7;
+    --surface-2: #EEEEEE;
+    --line: #D9D9D9;
+    --ink: #111111;
     --ink-soft: #565f75;
     --ink-faint: #8891a6;
-    --accent: #2a52cc;
-    --accent-ink: #1b3899;
-    --accent-soft: #eaf0ff;
-    --accent-line: #c7d6ff;
-    --success: #157f3c;
+    --accent: #00B8BF;
+    --accent-ink: #111111;
+    --accent-soft: #F6FDFE;
+    --accent-line: #AAF5FF;
+    --success: #10B981;
     --success-soft: #e6f6ec;
     --success-line: #bfe6ce;
     --warn: #8a5a08;
@@ -45,7 +38,7 @@
       --ink: #e7eaf5;
       --ink-soft: #a7afc7;
       --ink-faint: #6e7690;
-      --accent: #85a3ff;
+      --accent: #7CF1F8;
       --accent-ink: #cdd9ff;
       --accent-soft: #1b2547;
       --accent-line: #35437a;
@@ -66,7 +59,7 @@
     --ink: #e7eaf5;
     --ink-soft: #a7afc7;
     --ink-faint: #6e7690;
-    --accent: #85a3ff;
+    --accent: #7CF1F8;
     --accent-ink: #cdd9ff;
     --accent-soft: #1b2547;
     --accent-line: #35437a;
@@ -88,7 +81,7 @@
     margin: 0;
     background: var(--paper);
     color: var(--ink);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", ui-sans-serif, "Helvetica Neue", Arial, sans-serif;
+    font-family: var(--font-sans, 'Rubik'), -apple-system, BlinkMacSystemFont, "Segoe UI", ui-sans-serif, "Helvetica Neue", Arial, sans-serif;
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
   }
@@ -96,6 +89,7 @@
   code, .mono {
     font-family: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Menlo, Consolas, monospace;
     font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
   }
 
   .shell {
@@ -108,13 +102,13 @@
     align-items: start;
   }
   @media (max-width: 880px) {
-    .shell { grid-template-columns: 1fr; }
+    .shell { grid-template-columns: minmax(0, 1fr); }
   }
 
   /* ---------- Sidebar TOC ---------- */
   .toc {
     position: sticky;
-    top: 24px;
+    top: calc(var(--height-nav) + 24px);
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -136,6 +130,7 @@
     border-left: 2px solid transparent;
   }
   .toc a:hover { background: var(--surface); color: var(--ink); }
+  .toc a.on { background: var(--surface); color: var(--accent); font-weight: 600; }
   .toc a.part {
     font-weight: 700;
     color: var(--ink);
@@ -210,7 +205,7 @@
   /* ---------- Step cards ---------- */
   .step {
     display: grid;
-    grid-template-columns: 40px 1fr;
+    grid-template-columns: 40px minmax(0, 1fr);
     gap: 18px;
     padding: 28px 0;
     border-top: 1px solid var(--line);
@@ -808,5 +803,6 @@
     });
   });
 </script>
+<script src="/assets/toc-spy.js" defer></script>
 
 </body></html>

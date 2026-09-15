@@ -1,0 +1,111 @@
+/*
+  BrandForge design tokens, mirrored from the product app
+  (brand-forge-frontend/app/globals.css). Keep values in sync with that
+  file — this docs site has no build step, so there's no automated way
+  to share them; if the product tokens change, update this file by hand.
+*/
+:root {
+  --background: #FFFFFF;
+  --foreground: #111111;
+
+  --muted: #F4F6F7;
+  --muted-foreground: #8C8C8C;
+
+  --accent: #7CF1F8;
+  --accent-foreground: #111111;
+  --accent-soft: #AAF5FF;
+  --accent-strong: #00B8BF;
+
+  --border: #D9D9D9;
+  --border-muted: #8C8C8C;
+
+  --success: #10B981;
+  --warning: #F59E0B;
+  --destructive: #DF6B33;
+
+  --radius: 0.5rem;
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+
+  --spacing-card: 30px;
+  --spacing-btn-x: 18px;
+  --spacing-section-gap: 40px;
+  --height-btn: 40px;
+  --height-nav: 56px;
+
+  --font-sans: 'Rubik', -apple-system, BlinkMacSystemFont, "Segoe UI", ui-sans-serif, "Helvetica Neue", Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: var(--font-sans);
+  color: var(--foreground);
+  background: var(--background);
+}
+
+/* ---------- shared top nav (server-side included via partials/_nav.html) ---------- */
+.bf-nav {
+  position: sticky; top: 0; z-index: 100;
+  height: var(--height-nav);
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 24px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+}
+.bf-nav-inner {
+  max-width: 1280px; margin: 0 auto; width: 100%;
+  display: flex; align-items: center; gap: 8px;
+}
+.bf-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; flex-shrink: 0; }
+.bf-logo svg { height: 40px; width: auto; display: block; }
+.bf-logo-badge {
+  font-size: 9px; font-weight: 600; letter-spacing: 0.02em;
+  color: var(--accent-strong); background: var(--muted);
+  padding: 1px 5px; border-radius: var(--radius-sm);
+}
+.bf-nav-links { display: flex; align-items: center; gap: 2px; margin-left: 12px; }
+.bf-nav-links a {
+  font-size: 13.5px; font-weight: 500; color: var(--muted-foreground);
+  text-decoration: none; padding: 7px 12px; border-radius: var(--radius-md);
+  transition: background .12s, color .12s;
+}
+.bf-nav-links a:hover { color: var(--foreground); background: var(--muted); }
+.bf-nav-links a.on { color: var(--foreground); background: var(--muted); font-weight: 600; }
+.bf-nav-right { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+.bf-nav-right a {
+  font-size: 13.5px; font-weight: 500; color: var(--muted-foreground);
+  text-decoration: none; padding: 7px 12px; border-radius: var(--radius-md);
+  transition: background .12s, color .12s;
+}
+.bf-nav-right a:hover { color: var(--foreground); background: var(--muted); }
+
+@media (max-width: 480px) {
+  .bf-nav { padding: 0 12px; }
+  .bf-logo-badge { display: none; }
+  .bf-nav-links { margin-left: 8px; }
+  .bf-nav-links a { padding: 7px 8px; font-size: 12.5px; }
+}
+
+/* ---------- shared buttons ---------- */
+.bf-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  height: var(--height-btn); padding: 0 var(--spacing-btn-x);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-sans); font-size: 14px; font-weight: 600;
+  text-decoration: none; border: 0.5px solid transparent;
+  transition: background .15s, transform .1s;
+  cursor: pointer;
+}
+.bf-btn:active { transform: translateY(1px); }
+.bf-btn-primary { background: var(--accent); color: var(--accent-foreground); }
+.bf-btn-primary:hover { background: var(--accent-soft); }
+.bf-btn-outline { background: transparent; color: var(--foreground); border-color: var(--foreground); }
+.bf-btn-outline:hover { background: rgba(17, 17, 17, 0.06); }
+.bf-btn-ghost { background: transparent; color: var(--foreground); }
+.bf-btn-ghost:hover { background: var(--muted); }
+.bf-btn-sm { height: 32px; padding: 0 14px; font-size: 13px; }

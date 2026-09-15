@@ -2,88 +2,36 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>BrandForge Provisioning API</title>
+  <title>API Reference — BrandForge Developer Docs</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.11.0/swagger-ui.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/assets/tokens.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
-    * { box-sizing: border-box; }
-    body { margin: 0; background: #f8fafc; font-family: 'Inter', sans-serif; }
+    body { margin: 0; background: var(--muted); }
     .topbar { display: none !important; }
-
-    /* TOP NAV */
-    .bf-nav {
-      background: #fff; border-bottom: 1px solid #e5e7eb;
-      height: 52px; display: flex; align-items: center;
-      padding: 0 24px; gap: 16px;
-      position: sticky; top: 0; z-index: 1000;
-    }
-    .bf-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
-    .bf-logo-mark {
-      width: 26px; height: 26px; border-radius: 6px;
-      background: linear-gradient(135deg, #7CF1F8, #22d3ee);
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 12px; color: #0f172a;
-    }
-    .bf-logo-name { font-size: 15px; font-weight: 700; color: #111; }
-    .bf-logo-badge { font-size: 12px; font-weight: 600; color: #0891b2; background: #e0f7fa; padding: 2px 7px; border-radius: 4px; }
-    .bf-nav-sep { color: #e5e7eb; font-size: 18px; }
-    .bf-nav-title { font-size: 14px; font-weight: 600; color: #374151; }
-    .bf-nav-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
-    .bf-btn {
-      padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600;
-      text-decoration: none; transition: all .15s; font-family: 'Inter', sans-serif;
-    }
-    .bf-btn-ghost { color: #374151; border: 1px solid #e5e7eb; background: #fff; }
-    .bf-btn-ghost:hover { border-color: #9ca3af; }
-    .bf-btn-teal { background: #7CF1F8; color: #0f172a; border: none; cursor: pointer; }
-    .bf-btn-teal:hover { background: #22d3ee; }
 
     /* SWAGGER WRAPPER */
     #swagger-ui { max-width: 1200px; margin: 0 auto; padding: 0 24px 60px; }
     .swagger-ui .info { margin: 32px 0 20px; }
-    .swagger-ui .info .title { font-family: 'Inter', sans-serif !important; font-size: 24px !important; font-weight: 700 !important; color: #111 !important; }
-    .swagger-ui .info p { font-family: 'Inter', sans-serif; color: #6b7280; }
-    .swagger-ui .scheme-container { background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; }
-    .swagger-ui .btn.authorize { background: #7CF1F8 !important; color: #0f172a !important; border-color: #7CF1F8 !important; font-family: 'Inter', sans-serif !important; font-weight: 600 !important; border-radius: 6px !important; }
-    .swagger-ui .btn.authorize:hover { background: #22d3ee !important; }
-    .swagger-ui .opblock-tag { font-family: 'Inter', sans-serif !important; font-size: 15px !important; font-weight: 600 !important; }
-    .swagger-ui .opblock .opblock-summary-method { font-family: 'Inter', sans-serif !important; border-radius: 5px !important; }
-    .swagger-ui .opblock-summary-path { font-family: 'JetBrains Mono', monospace !important; }
-    .swagger-ui select, .swagger-ui input { font-family: 'Inter', sans-serif !important; }
-    .swagger-ui .btn { font-family: 'Inter', sans-serif !important; border-radius: 6px !important; }
-    .swagger-ui .execute-wrapper .btn.execute { background: #0891b2 !important; border-color: #0891b2 !important; color: #fff !important; font-weight: 600 !important; }
+    .swagger-ui .info .title { font-family: var(--font-sans) !important; font-size: 24px !important; font-weight: 700 !important; color: var(--foreground) !important; }
+    .swagger-ui .info p { font-family: var(--font-sans); color: var(--muted-foreground); }
+    .swagger-ui .scheme-container { background: var(--background); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 12px 16px; }
+    .swagger-ui .btn.authorize { background: var(--accent) !important; color: var(--accent-foreground) !important; border-color: var(--accent) !important; font-family: var(--font-sans) !important; font-weight: 600 !important; border-radius: var(--radius-md) !important; }
+    .swagger-ui .btn.authorize:hover { background: var(--accent-soft) !important; }
+    .swagger-ui .btn.authorize svg { fill: var(--accent-foreground) !important; }
+    .swagger-ui .opblock-tag { font-family: var(--font-sans) !important; font-size: 15px !important; font-weight: 600 !important; }
+    .swagger-ui .opblock .opblock-summary-method { font-family: var(--font-sans) !important; border-radius: var(--radius-sm) !important; }
+    .swagger-ui .opblock-summary-path { font-family: ui-monospace, "SF Mono", Consolas, monospace !important; }
+    .swagger-ui select, .swagger-ui input { font-family: var(--font-sans) !important; }
+    .swagger-ui .btn { font-family: var(--font-sans) !important; border-radius: var(--radius-md) !important; }
+    .swagger-ui .execute-wrapper .btn.execute { background: var(--accent-strong) !important; border-color: var(--accent-strong) !important; color: #fff !important; font-weight: 600 !important; }
   </style>
 </head>
 <body>
-  <nav style="position:sticky;top:0;z-index:200;background:#fff;border-bottom:1px solid #e5e7eb;height:52px;display:flex;align-items:center;padding:0 24px;gap:16px;font-family:'Inter',sans-serif;">
-    <a href="index.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
-      <div style="width:26px;height:26px;border-radius:6px;background:linear-gradient(135deg,#7CF1F8,#22d3ee);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#0f172a;">B</div>
-      <span style="font-size:15px;font-weight:700;color:#111;">BrandForge</span>
-      <span style="font-size:12px;font-weight:600;color:#0891b2;background:#e0f7fa;padding:2px 7px;border-radius:4px;">DOCS</span>
-    </a>
-    <span style="color:#e5e7eb;font-size:18px;">/</span>
-    <span style="font-size:14px;font-weight:600;color:#374151;">API Reference</span>
-    <div style="margin-left:auto;display:flex;gap:8px;">
-      <a href="index.html" style="padding:6px 14px;border-radius:6px;font-size:13px;font-weight:600;color:#374151;border:1px solid #e5e7eb;text-decoration:none;">← Back to docs</a>
-      <a href="swagger.html" style="padding:6px 14px;border-radius:6px;font-size:13px;font-weight:600;background:#7CF1F8;color:#0f172a;text-decoration:none;">API Reference</a>
-    </div>
-  </nav>
 
-
-  <nav class="bf-nav">
-    <a class="bf-logo" href="index.html">
-      <div class="bf-logo-mark">B</div>
-      <span class="bf-logo-name">BrandForge</span>
-      <span class="bf-logo-badge">DOCS</span>
-    </a>
-    <span class="bf-nav-sep">/</span>
-    <span class="bf-nav-title">Provisioning API Reference</span>
-    <div class="bf-nav-right">
-      <a href="index.html" class="bf-btn bf-btn-ghost">← Back to docs</a>
-      <a href="mailto:support@brandhelp.net" class="bf-btn bf-btn-ghost">Support</a>
-    </div>
-  </nav>
+<!--#include virtual="/partials/_nav.html" -->
 
   <div id="swagger-ui"></div>
 
