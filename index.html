@@ -133,9 +133,6 @@
     }
     .page-footer a { color: var(--accent-strong); text-decoration: none; }
     .page-footer a:hover { text-decoration: underline; }
-    .footer-rate { margin-left: auto; display: flex; align-items: center; gap: 10px; }
-    .rate-btn { border: 1px solid var(--border); padding: 5px 12px; border-radius: var(--radius-md); font-size: 12px; color: var(--muted-foreground); cursor: pointer; background: none; }
-    .rate-btn:hover { border-color: var(--accent-strong); color: var(--accent-strong); }
 
     @media (max-width: 1024px) { .toc { display: none; } }
     @media (max-width: 768px) { .sidebar { display: none; } .main { padding: 24px; } }
@@ -143,13 +140,31 @@
       .card-grid { grid-template-columns: 1fr; }
       .browse-grid { grid-template-columns: 1fr; }
       .page-footer { padding: 20px 24px; }
-      .footer-rate { margin-left: 0; width: 100%; justify-content: space-between; }
     }
+
+    /* Mobile drawer skeleton (.mobile-menu-btn / .mobile-drawer*) now lives in
+       assets/tokens.css — shared with whmcs-onboarding.html and upmind.html,
+       which use the same pattern to reveal their own "on this page" nav. */
+    .mobile-drawer-panel .sidebar { display: block; position: static; height: auto; padding: 0; border-right: none; }
   </style>
 </head>
 <body>
 
 <!--#include virtual="/partials/_nav.html" -->
+
+<!-- MOBILE MENU DRAWER — panel content is filled at runtime by cloning .sidebar
+     (see script near the end of body), so it always matches the real sidebar. -->
+<div class="mobile-drawer">
+  <div class="mobile-drawer-backdrop"></div>
+  <div class="mobile-drawer-panel">
+    <div class="mobile-drawer-header">
+      <span>Menu</span>
+      <button class="mobile-drawer-close" aria-label="Close menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
 
 <div class="layout">
 
@@ -375,13 +390,42 @@ curl -X POST https://brandforge.software/api/godmode/v1/provision/create \
   <span>© 2026 BrandForge</span>
   <a href="/provisioning-api">API reference</a>
   <a href="#">Terms</a>
-  <div class="footer-rate">
-    <span style="font-size:13px; color:var(--muted-foreground);">Was this page helpful?</span>
-    <button class="rate-btn">👍 Yes</button>
-    <button class="rate-btn">👎 No</button>
-  </div>
 </footer>
 
 <script src="/assets/toc-spy.js" defer></script>
+<script>
+(function () {
+  var navInner = document.querySelector('.bf-nav-inner');
+  var sidebar = document.querySelector('.sidebar');
+  var drawerPanel = document.querySelector('.mobile-drawer-panel');
+  if (!navInner || !sidebar || !drawerPanel) return;
+
+  // Hamburger button — inserted into the shared nav at runtime rather than
+  // added to partials/_nav.html, since the drawer it opens is specific to
+  // this page (only index.html has a .sidebar to reveal).
+  var btn = document.createElement('button');
+  btn.className = 'mobile-menu-btn';
+  btn.setAttribute('aria-label', 'Open menu');
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>';
+  navInner.appendChild(btn);
+
+  // Drawer content is a live clone of the real sidebar, not hand-duplicated
+  // markup, so it can never drift out of sync with it.
+  drawerPanel.appendChild(sidebar.cloneNode(true));
+
+  function open() { document.body.classList.add('mobile-menu-open'); }
+  function close() { document.body.classList.remove('mobile-menu-open'); }
+
+  btn.addEventListener('click', open);
+  document.querySelector('.mobile-drawer-close').addEventListener('click', close);
+  document.querySelector('.mobile-drawer-backdrop').addEventListener('click', close);
+  drawerPanel.addEventListener('click', function (e) {
+    if (e.target.closest('a')) close();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') close();
+  });
+})();
+</script>
 </body>
 </html>

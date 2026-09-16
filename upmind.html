@@ -2,6 +2,20 @@
 
 <!--#include virtual="/partials/_nav.html" -->
 
+<!-- MOBILE MENU DRAWER — panel content is filled at runtime by cloning .toc
+     (see script near the end of body), so it always matches the real TOC. -->
+<div class="mobile-drawer">
+  <div class="mobile-drawer-backdrop"></div>
+  <div class="mobile-drawer-panel">
+    <div class="mobile-drawer-header">
+      <span>On this page</span>
+      <button class="mobile-drawer-close" aria-label="Close menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
 <style>
   /* Brand tokens mirrored from brand-forge-frontend/app/globals.css —
      see /assets/tokens.css. --accent here is used as TEXT (eyebrows,
@@ -70,11 +84,12 @@
   .toc a { font-size: 13px; color: var(--ink-soft); text-decoration: none; padding: 6px 10px; border-radius: 8px; }
   .toc a:hover { background: var(--surface); color: var(--ink); }
   .toc a.on { background: var(--surface); color: var(--accent); font-weight: 600; }
-  @media (max-width: 860px) { .toc { position: static; flex-direction: row; flex-wrap: wrap; gap: 6px; } }
+  @media (max-width: 860px) { .toc { display: none; } }
+  .mobile-drawer-panel .toc { display: flex; position: static; padding: 0 12px; }
 
   main { min-width: 0; }
   .eyebrow { font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent-ink); margin: 0 0 10px; }
-  h1 { font-size: 33px; line-height: 1.14; letter-spacing: -0.015em; margin: 0 0 14px; text-wrap: balance; font-weight: 700; }
+  h1 { font-size: 32px; line-height: 1.15; letter-spacing: -0.015em; margin: 0 0 14px; text-wrap: balance; font-weight: 700; }
   .lede { font-size: 16px; color: var(--ink-soft); max-width: 66ch; margin: 0 0 18px; }
   .lede a { color: var(--accent); font-weight: 500; }
   .meta-row { display: flex; gap: 18px; flex-wrap: wrap; font-size: 13px; color: var(--ink-faint); margin-bottom: 32px; padding-bottom: 26px; border-bottom: 1px solid var(--line); }
@@ -325,4 +340,36 @@
 </div>
 
 <script src="/assets/toc-spy.js" defer></script>
+<script>
+(function () {
+  var navInner = document.querySelector('.bf-nav-inner');
+  var toc = document.querySelector('.toc');
+  var drawerPanel = document.querySelector('.mobile-drawer-panel');
+  if (!navInner || !toc || !drawerPanel) return;
+
+  var btn = document.createElement('button');
+  btn.className = 'mobile-menu-btn';
+  btn.setAttribute('aria-label', 'Open menu');
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>';
+  navInner.appendChild(btn);
+
+  var tocClone = toc.cloneNode(true);
+  var tocLabel = tocClone.querySelector('.toc-label');
+  if (tocLabel) tocLabel.remove(); // the drawer header already has an "On this page" label
+  drawerPanel.appendChild(tocClone);
+
+  function open() { document.body.classList.add('mobile-menu-open'); }
+  function close() { document.body.classList.remove('mobile-menu-open'); }
+
+  btn.addEventListener('click', open);
+  document.querySelector('.mobile-drawer-close').addEventListener('click', close);
+  document.querySelector('.mobile-drawer-backdrop').addEventListener('click', close);
+  drawerPanel.addEventListener('click', function (e) {
+    if (e.target.closest('a')) close();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') close();
+  });
+})();
+</script>
 </body></html>

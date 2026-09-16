@@ -53,8 +53,16 @@ body {
   height: var(--height-nav);
   display: flex; align-items: center; gap: 8px;
   padding: 0 24px;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(8px);
+  /* Every host page sets its own body line-height (1.65 / 1.55 / Swagger's
+     own default), and the badge/link pills below never set their own — so
+     they were silently inheriting a different line-height per page, making
+     the same font-size render as a visibly different pill height each time.
+     Pin it here once so nothing in the nav depends on the host page again. */
+  line-height: 1;
+  /* Solid background, not rgba()+backdrop-filter — that combo has been flaky
+     on some mobile browsers (notably older Samsung Internet), sometimes
+     rendering the whole bar invisible instead of just non-blurred. */
+  background: var(--background);
   border-bottom: 1px solid var(--border);
 }
 .bf-nav-inner {
@@ -87,9 +95,53 @@ body {
 @media (max-width: 480px) {
   .bf-nav { padding: 0 12px; }
   .bf-logo-badge { display: none; }
+  .bf-logo svg { height: 26px; }
   .bf-nav-links { margin-left: 8px; }
   .bf-nav-links a { padding: 7px 8px; font-size: 12.5px; }
 }
+@media (max-width: 360px) {
+  /* At the narrowest common widths, the logo + both nav links + the mobile
+     menu button no longer all fit. The logo stays (it's also the only way
+     back to "/"); the text links go — the hamburger drawer already covers
+     the same destinations on pages that have one. */
+  .bf-nav-links { display: none; }
+}
+
+/* ---------- mobile drawer (shared skeleton; pages fill .mobile-drawer-panel
+   with their own content — index.html clones .sidebar, the guide pages clone
+   .toc) ---------- */
+.mobile-menu-btn {
+  display: none; align-items: center; justify-content: center;
+  width: 36px; height: 36px; margin-left: auto; flex-shrink: 0;
+  background: none; border: none; border-radius: var(--radius-md);
+  color: var(--foreground); cursor: pointer;
+}
+.mobile-menu-btn:hover { background: var(--muted); }
+.mobile-menu-btn svg { width: 20px; height: 20px; }
+@media (max-width: 768px) { .mobile-menu-btn { display: flex; } }
+
+.mobile-drawer { position: fixed; inset: 0; z-index: 200; display: none; }
+body.mobile-menu-open .mobile-drawer { display: block; }
+.mobile-drawer-backdrop { position: absolute; inset: 0; background: rgba(17, 17, 17, 0.4); }
+.mobile-drawer-panel {
+  /* Opens from the right, matching the hamburger button's position in the
+     nav (right-aligned via margin-left:auto above) — a left-side or
+     centered panel paired with a right-side trigger reads as broken. */
+  position: absolute; top: 0; right: 0; bottom: 0; left: auto; width: 280px; max-width: 85vw;
+  background: var(--background); box-shadow: -4px 0 24px rgba(0,0,0,0.15);
+  overflow-y: auto; padding: 8px 0 24px;
+}
+.mobile-drawer-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 20px 10px 12px; border-bottom: 1px solid var(--border); margin-bottom: 8px;
+}
+.mobile-drawer-header span { font-size: 12px; font-weight: 700; color: var(--muted-foreground); text-transform: uppercase; letter-spacing: 0.8px; }
+.mobile-drawer-close {
+  display: flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; background: none; border: none; border-radius: var(--radius-md);
+  color: var(--foreground); cursor: pointer;
+}
+.mobile-drawer-close:hover { background: var(--muted); }
 
 /* ---------- shared buttons ---------- */
 .bf-btn {
